@@ -968,6 +968,46 @@ DAEDALUS_TEST(NumberTheory, modular_arithmetic) {
     CHECK_THROWS_AS(modularPower(2, 3, 0), InvalidArgument);
 }
 
+DAEDALUS_TEST(NumberTheory, the_portable_modular_multiply_matches_the_128_bit_one) {
+    // modularMultiply uses __int128 where the compiler has it and the doubling
+    // loop where it does not (MSVC). Only one of those paths is ever compiled,
+    // so the other goes untested unless it is called by name -- and the
+    // doubling loop is exactly where a naive (a + b) % m silently overflows
+    // once the modulus rises above 2^63.
+    constexpr std::uint64_t kLargestPrime64 = 18446744073709551557ull;
+
+    const std::vector<std::pair<std::uint64_t, std::uint64_t>> cases{
+        {0, 0},
+        {1, 1},
+        {2, 3},
+        {kLargestPrime64 - 1, 2},
+        {kLargestPrime64 - 1, kLargestPrime64 - 1},
+        {1ull << 63, 3},
+        {12345678901234567ull, 98765432109876543ull},
+        {(1ull << 62) + 7, (1ull << 62) + 11},
+    };
+
+    for (const auto& testCase : cases) {
+        CHECK_EQ(modularMultiplyPortable(testCase.first, testCase.second, kLargestPrime64),
+                 modularMultiply(testCase.first, testCase.second, kLargestPrime64));
+        CHECK_EQ(modularMultiplyPortable(testCase.first, testCase.second, 1000000007ull),
+                 modularMultiply(testCase.first, testCase.second, 1000000007ull));
+    }
+
+    std::mt19937_64 rng(20260910u);
+    for (int trial = 0; trial < 2000; ++trial) {
+        const std::uint64_t a = rng();
+        const std::uint64_t b = rng();
+        const std::uint64_t modulus = (rng() | (1ull << 63)) - 1;   // forces m > 2^63
+        CHECK_EQ(modularMultiplyPortable(a, b, modulus), modularMultiply(a, b, modulus));
+    }
+
+    // The exact value MSVC got wrong: (m - 1) * 2 mod m is m - 2.
+    CHECK_EQ(modularMultiplyPortable(kLargestPrime64 - 1, 2, kLargestPrime64), kLargestPrime64 - 2);
+    CHECK_EQ(modularAdd(kLargestPrime64 - 1, kLargestPrime64 - 1, kLargestPrime64),
+             kLargestPrime64 - 2);
+}
+
 DAEDALUS_TEST(NumberTheory, chinese_remainder_theorem) {
     // x = 2 mod 3, x = 3 mod 5, x = 2 mod 7  ->  x = 23 mod 105
     const auto solution = chineseRemainder({2, 3, 2}, {3, 5, 7}).value();

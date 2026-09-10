@@ -209,6 +209,7 @@ struct CoinChangeResult {
                                               long long amount) {
     require(amount >= 0, "coin change amount must be non-negative");
     std::vector<long long> ways(static_cast<std::size_t>(amount) + 1, 0);
+    if (ways.empty()) return 0;   // size is amount + 1, so never actually empty
     ways[0] = 1;
     for (long long coin : coins) {
         if (coin <= 0) continue;
@@ -281,6 +282,7 @@ struct CoinChangeResult {
 [[nodiscard]] inline bool subsetSumExists(const std::vector<long long>& values, long long target) {
     if (target < 0) return false;
     std::vector<bool> reachable(static_cast<std::size_t>(target) + 1, false);
+    if (reachable.empty()) return false;   // size is target + 1
     reachable[0] = true;
     for (long long value : values) {
         if (value <= 0) continue;
@@ -417,6 +419,7 @@ struct MatrixChainResult {
 [[nodiscard]] inline long long gridPathCount(std::size_t rows, std::size_t columns) {
     if (rows == 0 || columns == 0) return 0;
     std::vector<long long> row(columns, 1);
+    if (row.empty()) return 0;   // columns > 0 was checked above
     for (std::size_t r = 1; r < rows; ++r) {
         for (std::size_t c = 1; c < columns; ++c) row[c] += row[c - 1];
     }

@@ -31,21 +31,40 @@
 
 namespace daedalus {
 
+/// (a + b) mod m for a, b already reduced. Written as a subtraction rather than
+/// an addition because a + b overflows uint64 whenever m is above 2^63 -- and
+/// the largest 64-bit prime is exactly such an m.
+[[nodiscard]] inline std::uint64_t modularAdd(std::uint64_t a, std::uint64_t b,
+                                              std::uint64_t modulus) {
+    return a >= modulus - b ? a - (modulus - b) : a + b;
+}
+
+/// Russian-peasant modular multiplication. This is the portable path, used when
+/// the compiler has no 128-bit integer type -- MSVC, notably. It is exported by
+/// name rather than hidden inside an #else so the test suite can exercise it on
+/// every platform; a fallback that only ever compiles on the one toolchain you
+/// do not develop on is a fallback that is silently wrong.
+[[nodiscard]] inline std::uint64_t modularMultiplyPortable(std::uint64_t a, std::uint64_t b,
+                                                           std::uint64_t modulus) {
+    std::uint64_t result = 0;
+    a %= modulus;
+    b %= modulus;
+    while (b > 0) {
+        if (b & 1u) result = modularAdd(result, a, modulus);
+        a = modularAdd(a, a, modulus);
+        b >>= 1;
+    }
+    return result;
+}
+
 /// Multiplies modulo m without overflowing. Uses the compiler's 128-bit type
-/// when it exists, and falls back to Russian-peasant doubling when it does not.
+/// where it exists, and the portable doubling loop where it does not.
 [[nodiscard]] inline std::uint64_t modularMultiply(std::uint64_t a, std::uint64_t b,
                                                    std::uint64_t modulus) {
 #if defined(__SIZEOF_INT128__)
     return static_cast<std::uint64_t>((static_cast<__uint128_t>(a) * b) % modulus);
 #else
-    std::uint64_t result = 0;
-    a %= modulus;
-    while (b > 0) {
-        if (b & 1u) result = (result + a) % modulus;
-        a = (a + a) % modulus;
-        b >>= 1;
-    }
-    return result;
+    return modularMultiplyPortable(a, b, modulus);
 #endif
 }
 
