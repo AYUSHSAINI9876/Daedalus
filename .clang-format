@@ -1,0 +1,19 @@
+# Google style with a 100-column limit, which is what the whole tree is
+# written to. Run: clang-format -i $(git ls-files '*.hpp' '*.cpp')
+BasedOnStyle: Google
+Language: Cpp
+Standard: c++20
+
+ColumnLimit: 100
+IndentWidth: 4
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortCaseLabelsOnASingleLine: true
+BinPackArguments: true
+BinPackParameters: true
+DerivePointerAlignment: false
+PointerAlignment: Left
+SpacesBeforeTrailingComments: 3
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve

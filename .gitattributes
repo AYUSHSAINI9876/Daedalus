@@ -1,0 +1,20 @@
+# Normalise line endings so a Windows checkout does not break the Linux CI.
+* text=auto eol=lf
+
+# Shell scripts MUST be LF or bash refuses them with a cryptic error.
+*.sh text eol=lf
+
+# Windows-only helpers keep CRLF.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Never touch binary content.
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
+
+# Better diffs for C++.
+*.cpp diff=cpp
+*.hpp diff=cpp

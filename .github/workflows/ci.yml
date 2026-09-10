@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # The main gate: build with warnings as errors, run every test, then run the
+  # HTTP smoke test against a real server process.
+  # ---------------------------------------------------------------------------
+  build-and-test:
+    name: ${{ matrix.os }} / ${{ matrix.compiler }} / ${{ matrix.build_type }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,  compiler: gcc,   build_type: Debug }
+          - { os: ubuntu-latest,  compiler: gcc,   build_type: Release }
+          - { os: ubuntu-latest,  compiler: clang, build_type: Release }
+          - { os: macos-latest,   compiler: clang, build_type: Release }
+          - { os: windows-latest, compiler: msvc,  build_type: Release }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select the compiler
+        if: runner.os != 'Windows'
+        run: |
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            echo "CC=clang"   >> "$GITHUB_ENV"
+            echo "CXX=clang++" >> "$GITHUB_ENV"
+          else
+            echo "CC=gcc"   >> "$GITHUB_ENV"
+            echo "CXX=g++"  >> "$GITHUB_ENV"
+          fi
+
+      - name: Configure
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DDAEDALUS_WERROR=ON
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} -j 4
+
+      - name: Unit tests
+        run: ctest --test-dir build --build-config ${{ matrix.build_type }} --output-on-failure
+
+      # The CLI is part of the deliverable, so a crash in it must fail CI.
+      - name: CLI demo runs end to end
+        if: runner.os != 'Windows'
+        run: ./build/bin/daedalus_cli demo > /dev/null
+
+      - name: CLI demo runs end to end (Windows)
+        if: runner.os == 'Windows'
+        run: .\build\bin\${{ matrix.build_type }}\daedalus_cli.exe demo > $null
+
+      # Only the unit tests can be run on every platform; the shell smoke test
+      # needs bash and curl, which is Linux and macOS here.
+      - name: HTTP smoke test
+        if: runner.os != 'Windows'
+        run: ./scripts/smoke.sh ./build/bin/daedalus_server ./web
+
+  # ---------------------------------------------------------------------------
+  # Address and undefined-behaviour sanitizers. Separate job because it is slow
+  # and because a sanitizer failure is a different kind of signal.
+  # ---------------------------------------------------------------------------
+  sanitizers:
+    name: sanitizers (asan + ubsan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure with sanitizers
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Debug
+          -DDAEDALUS_SANITIZE=ON
+
+      - name: Build
+        run: cmake --build build -j 4
+
+      - name: Run the suite under the sanitizers
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: ./build/bin/daedalus_tests
+
+  # ---------------------------------------------------------------------------
+  # A clean checkout must build with nothing but a compiler and CMake -- no
+  # network, no package manager. This job proves the zero-dependency claim
+  # rather than asserting it in the README.
+  # ---------------------------------------------------------------------------
+  offline-build:
+    name: builds with no network access
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure and build with networking disabled
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          # unshare -n drops the network namespace: any attempt to fetch a
+          # dependency here would fail loudly.
+          sudo unshare -n cmake --build build -j 4
+          ./build/bin/daedalus_tests
+
+  # ---------------------------------------------------------------------------
+  # Formatting. Advisory rather than blocking: a reformat should never be the
+  # reason a correctness fix cannot merge.
+  # ---------------------------------------------------------------------------
+  format:
+    name: clang-format
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y clang-format
+
+      - name: Check formatting
+        run: |
+          files=$(git ls-files '*.hpp' '*.cpp')
+          clang-format --dry-run --Werror $files

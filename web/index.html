@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daedalus - data structures &amp; algorithms playground</title>
+<link rel="stylesheet" href="/static/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- ======================= sign-in gate ======================= -->
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <div class="brand">
+      <span class="brand-mark">D</span>
+      <div>
+        <h1>Daedalus</h1>
+        <p class="brand-sub">C++20 data structures &amp; algorithms, served over a
+           hand-written HTTP server.</p>
+      </div>
+    </div>
+
+    <div class="tab-strip" role="tablist">
+      <button class="tab is-active" id="tab-login" role="tab" data-pane="pane-login">Sign in</button>
+      <button class="tab" id="tab-register" role="tab" data-pane="pane-register">Create account</button>
+    </div>
+
+    <form id="pane-login" class="pane is-active" autocomplete="on">
+      <label for="login-username">Username</label>
+      <input id="login-username" name="username" type="text" required autocomplete="username">
+      <label for="login-password">Password</label>
+      <input id="login-password" name="password" type="password" required autocomplete="current-password">
+      <button class="primary" type="submit">Sign in</button>
+      <p class="hint">Demo accounts, when the server was started with
+        <code>--seed</code>: <code>admin</code>, <code>operator</code> or
+        <code>viewer</code>.</p>
+    </form>
+
+    <form id="pane-register" class="pane" autocomplete="on">
+      <label for="register-username">Username</label>
+      <input id="register-username" name="username" type="text" required autocomplete="username">
+      <label for="register-email">Email</label>
+      <input id="register-email" name="email" type="email" required autocomplete="email">
+      <label for="register-password">Password</label>
+      <input id="register-password" name="password" type="password" required autocomplete="new-password">
+      <p class="hint">At least 12 characters, with an uppercase letter, a lowercase
+        letter and a digit. It must not contain your username.</p>
+      <button class="primary" type="submit">Create account</button>
+    </form>
+
+    <p id="gate-message" class="message" role="status"></p>
+  </div>
+</div>
+
+<!-- ======================= application ======================= -->
+<div id="app" class="app is-hidden">
+
+  <header class="topbar">
+    <div class="brand brand-compact">
+      <span class="brand-mark">D</span>
+      <strong>Daedalus</strong>
+      <span class="version" id="server-version"></span>
+    </div>
+    <nav class="nav" role="tablist">
+      <button class="nav-item is-active" data-view="view-sorting" role="tab">Sorting</button>
+      <button class="nav-item" data-view="view-trees" role="tab">Trees</button>
+      <button class="nav-item" data-view="view-graphs" role="tab">Graphs</button>
+      <button class="nav-item" data-view="view-strings" role="tab">Strings</button>
+      <button class="nav-item is-admin is-hidden" data-view="view-admin" role="tab">Admin</button>
+    </nav>
+    <div class="session">
+      <span id="session-user" class="who"></span>
+      <button id="logout" class="ghost">Sign out</button>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ---------------- sorting ---------------- -->
+    <section id="view-sorting" class="view is-active">
+      <div class="panel">
+        <h2>Sorting</h2>
+        <p class="lead">Twelve strategies behind one interface. Every comparison and
+          swap is counted by an observer attached at runtime, so the complexity
+          difference is a measurement rather than a claim.</p>
+
+        <div class="controls">
+          <label for="sort-algorithm">Algorithm</label>
+          <select id="sort-algorithm"></select>
+
+          <label for="sort-size">Values</label>
+          <input id="sort-size" type="number" min="2" max="2000" value="40">
+
+          <label for="sort-shape">Shape</label>
+          <select id="sort-shape">
+            <option value="random">random</option>
+            <option value="sorted">already sorted</option>
+            <option value="reversed">reversed</option>
+            <option value="duplicates">many duplicates</option>
+          </select>
+
+          <button id="sort-generate" class="ghost">Generate</button>
+          <button id="sort-run" class="primary">Run</button>
+          <button id="sort-compare" class="ghost">Compare all</button>
+        </div>
+
+        <label for="sort-values">Input array</label>
+        <textarea id="sort-values" rows="3" spellcheck="false"></textarea>
+
+        <div id="sort-bars" class="bars" aria-hidden="true"></div>
+        <div id="sort-stats" class="stats"></div>
+        <div id="sort-table-wrap" class="table-wrap is-hidden">
+          <table id="sort-table" class="table">
+            <thead><tr>
+              <th>algorithm</th><th>comparisons</th><th>swaps</th>
+              <th>ms</th><th>stable</th><th>in place</th><th>worst case</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <details id="sort-trace-wrap" class="details">
+          <summary>First 60 instrumented events</summary>
+          <pre id="sort-trace" class="pre"></pre>
+        </details>
+      </div>
+    </section>
+
+    <!-- ---------------- trees ---------------- -->
+    <section id="view-trees" class="view">
+      <div class="panel">
+        <h2>Search trees</h2>
+        <p class="lead">The same keys inserted into five different trees. Feed them
+          <em>sorted</em> input to see the unbalanced BST degenerate into a linked
+          list while the balanced variants stay logarithmic.</p>
+
+        <div class="controls">
+          <label for="tree-kind">Structure</label>
+          <select id="tree-kind">
+            <option value="bst">binary search tree</option>
+            <option value="avl" selected>AVL tree</option>
+            <option value="redblack">red-black tree</option>
+            <option value="splay">splay tree</option>
+            <option value="treap">treap</option>
+          </select>
+
+          <label for="tree-size">Keys</label>
+          <input id="tree-size" type="number" min="1" max="500" value="15">
+
+          <label for="tree-shape">Insertion order</label>
+          <select id="tree-shape">
+            <option value="random">random</option>
+            <option value="sorted">sorted (worst case)</option>
+          </select>
+
+          <button id="tree-generate" class="ghost">Generate</button>
+          <button id="tree-run" class="primary">Build</button>
+          <button id="tree-compare" class="ghost">Compare heights</button>
+        </div>
+
+        <label for="tree-values">Keys to insert</label>
+        <textarea id="tree-values" rows="2" spellcheck="false"></textarea>
+
+        <div id="tree-stats" class="stats"></div>
+        <div id="tree-canvas" class="tree-canvas"></div>
+        <details class="details">
+          <summary>Traversals and server-rendered diagram</summary>
+          <div id="tree-traversals" class="kv"></div>
+          <pre id="tree-diagram" class="pre"></pre>
+        </details>
+      </div>
+    </section>
+
+    <!-- ---------------- graphs ---------------- -->
+    <section id="view-graphs" class="view">
+      <div class="panel">
+        <h2>Graphs</h2>
+        <p class="lead">One edge list, eleven algorithms. Edges are written one per
+          line as <code>from to weight</code>; the weight is optional.</p>
+
+        <div class="controls">
+          <label for="graph-algorithm">Algorithm</label>
+          <select id="graph-algorithm"></select>
+
+          <label for="graph-source">Source</label>
+          <input id="graph-source" type="text" value="A" size="6">
+
+          <label class="check"><input id="graph-directed" type="checkbox"> directed</label>
+
+          <button id="graph-sample" class="ghost">Load sample</button>
+          <button id="graph-run" class="primary">Run</button>
+        </div>
+
+        <label for="graph-edges">Edges</label>
+        <textarea id="graph-edges" rows="8" spellcheck="false"></textarea>
+
+        <div id="graph-stats" class="stats"></div>
+        <div id="graph-canvas" class="graph-canvas"></div>
+        <pre id="graph-output" class="pre"></pre>
+      </div>
+    </section>
+
+    <!-- ---------------- strings ---------------- -->
+    <section id="view-strings" class="view">
+      <div class="panel">
+        <h2>Strings</h2>
+        <p class="lead">Pattern matching, palindromes, edit distance and suffix
+          arrays. The matchers all agree with each other; the test suite checks
+          every one against a naive scan.</p>
+
+        <div class="controls">
+          <label for="string-algorithm">Algorithm</label>
+          <select id="string-algorithm">
+            <option value="kmp">Knuth-Morris-Pratt</option>
+            <option value="z">Z algorithm</option>
+            <option value="rabin-karp">Rabin-Karp</option>
+            <option value="boyer-moore">Boyer-Moore-Horspool</option>
+            <option value="palindrome">longest palindrome</option>
+            <option value="edit-distance">edit distance</option>
+            <option value="lcs">longest common subsequence</option>
+            <option value="suffix-array">suffix array</option>
+          </select>
+          <button id="string-run" class="primary">Run</button>
+        </div>
+
+        <label for="string-text">Text</label>
+        <textarea id="string-text" rows="4" spellcheck="false">the labyrinth of daedalus, the labyrinth of minos, a labyrinth without end</textarea>
+
+        <label for="string-pattern">Pattern / second string</label>
+        <input id="string-pattern" type="text" value="labyrinth">
+
+        <div id="string-stats" class="stats"></div>
+        <div id="string-highlight" class="highlight"></div>
+        <pre id="string-output" class="pre"></pre>
+      </div>
+    </section>
+
+    <!-- ---------------- admin ---------------- -->
+    <section id="view-admin" class="view">
+      <div class="panel">
+        <h2>Administration</h2>
+        <p class="lead">Visible only to the admin role. The authorisation check is a
+          single middleware in front of every <code>/api/admin/</code> route, not a
+          condition repeated in each handler.</p>
+
+        <div class="controls">
+          <button id="admin-refresh" class="primary">Refresh</button>
+        </div>
+
+        <h3>Accounts</h3>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr>
+              <th>username</th><th>email</th><th>role</th><th>active</th><th>failed attempts</th>
+            </tr></thead>
+            <tbody id="admin-users"></tbody>
+          </table>
+        </div>
+
+        <h3>Audit trail</h3>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr>
+              <th>action</th><th>username</th><th>client</th><th>result</th><th>detail</th>
+            </tr></thead>
+            <tbody id="admin-audit"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <p id="app-message" class="message floating" role="status"></p>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
