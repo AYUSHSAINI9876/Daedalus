@@ -1,10 +1,15 @@
 # Daedalus
 
+[![CI](https://github.com/AYUSHSAINI9876/Daedalus/actions/workflows/ci.yml/badge.svg)](https://github.com/AYUSHSAINI9876/Daedalus/actions/workflows/ci.yml)
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)](#)
+
 **A C++20 data structures and algorithms library, built around an
 object-oriented core — with a hand-written HTTP server and an authenticated web
 playground on top of it.**
 
-Zero third-party dependencies. Nothing but a C++20 compiler and CMake. 373 unit
+Zero third-party dependencies. Nothing but a C++20 compiler and CMake. 374 unit
 tests and 40 end-to-end HTTP assertions, all green, compiled with
 `-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror`.
 
@@ -35,7 +40,7 @@ cd Daedalus
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
 
-./build/bin/daedalus_tests                     # 373 tests
+./build/bin/daedalus_tests                     # 374 tests
 ./build/bin/daedalus_cli demo                  # a tour of everything, in the terminal
 ./build/bin/daedalus_server --seed             # then open http://127.0.0.1:8080
 ./build/bin/daedalus_bench                     # measured against the standard library
@@ -299,7 +304,7 @@ include/daedalus/
   concurrent/   BlockingQueue, ThreadPool
   auth/         SHA-256, HMAC, PBKDF2, AuthService, RBAC, rate limiting
   net/          Json, Http, Router, Server, Api
-tests/          373 unit tests + the bundled framework
+tests/          374 unit tests + the bundled framework
 examples/       daedalus_cli, daedalus_server
 benchmarks/     measured against the standard library
 web/            the playground (no framework, no CDN, no build step)
