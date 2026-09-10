@@ -96,7 +96,7 @@ public:
             }
             step /= 2;
         }
-        return position;  // 0-based index of the first element reaching target
+        return position;   // 0-based index of the first element reaching target
     }
 
 private:
@@ -166,6 +166,6 @@ private:
     size_type count_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_FENWICK_TREE_HPP
+#endif   // DAEDALUS_TREES_FENWICK_TREE_HPP

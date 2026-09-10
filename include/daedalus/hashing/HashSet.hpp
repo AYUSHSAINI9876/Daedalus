@@ -134,6 +134,6 @@ private:
     HashMap<T, Unit, Hash> map_;
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_HASHING_HASH_SET_HPP
+#endif   // DAEDALUS_HASHING_HASH_SET_HPP

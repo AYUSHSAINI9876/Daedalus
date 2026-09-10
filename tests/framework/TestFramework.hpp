@@ -41,8 +41,9 @@ template <typename T, typename = void>
 struct IsStreamable : std::false_type {};
 
 template <typename T>
-struct IsStreamable<T, std::void_t<decltype(std::declval<std::ostream&>()
-                                            << std::declval<const T&>())>> : std::true_type {};
+struct IsStreamable<
+    T, std::void_t<decltype(std::declval<std::ostream&>() << std::declval<const T&>())>>
+    : std::true_type {};
 
 template <typename T, typename = void>
 struct IsIterable : std::false_type {};
@@ -54,9 +55,15 @@ struct IsIterable<T, std::void_t<decltype(std::begin(std::declval<const T&>())),
 template <typename T>
 std::string stringify(const T& value);
 
-inline std::string stringify(const std::string& value) { return "\"" + value + "\""; }
-inline std::string stringify(const char* value) { return std::string("\"") + value + "\""; }
-inline std::string stringify(bool value) { return value ? "true" : "false"; }
+inline std::string stringify(const std::string& value) {
+    return "\"" + value + "\"";
+}
+inline std::string stringify(const char* value) {
+    return std::string("\"") + value + "\"";
+}
+inline std::string stringify(bool value) {
+    return value ? "true" : "false";
+}
 
 template <typename A, typename B>
 std::string stringify(const std::pair<A, B>& value) {
@@ -90,8 +97,8 @@ std::string stringify(const T& value) {
 class AssertionFailure : public std::exception {
 public:
     AssertionFailure(std::string file, int line, std::string message) {
-        rendered_ = std::move(file) + ":" + std::to_string(line) + "\n           " +
-                    std::move(message);
+        rendered_ =
+            std::move(file) + ":" + std::to_string(line) + "\n           " + std::move(message);
     }
     [[nodiscard]] const char* what() const noexcept override { return rendered_.c_str(); }
 
@@ -135,8 +142,7 @@ public:
                 filter = arg.substr(9);
             } else {
                 std::cerr << "unknown option: " << arg << "\n"
-                          << "usage: " << argv[0]
-                          << " [--list] [--filter=<substr>] [--verbose]\n";
+                          << "usage: " << argv[0] << " [--list] [--filter=<substr>] [--verbose]\n";
                 return 2;
             }
         }
@@ -213,7 +219,7 @@ struct Registrar {
     }
 };
 
-}  // namespace daedalus::testing
+}   // namespace daedalus::testing
 
 // --- macros ------------------------------------------------------------------
 
@@ -226,93 +232,90 @@ struct Registrar {
 #define DAEDALUS_FAIL(message) \
     throw ::daedalus::testing::AssertionFailure(__FILE__, __LINE__, (message))
 
-#define CHECK_TRUE(expr)                                                \
-    do {                                                                \
+#define CHECK_TRUE(expr)                                                  \
+    do {                                                                  \
         if (!(expr)) DAEDALUS_FAIL(std::string("expected true: " #expr)); \
     } while (false)
 
-#define CHECK_FALSE(expr)                                                  \
-    do {                                                                   \
-        if ((expr)) DAEDALUS_FAIL(std::string("expected false: " #expr));   \
+#define CHECK_FALSE(expr)                                                 \
+    do {                                                                  \
+        if ((expr)) DAEDALUS_FAIL(std::string("expected false: " #expr)); \
     } while (false)
 
-#define CHECK_EQ(lhs, rhs)                                                          \
-    do {                                                                            \
-        const auto daedalus_lhs = (lhs);                                           \
-        const auto daedalus_rhs = (rhs);                                           \
-        if (!(daedalus_lhs == daedalus_rhs))                                        \
-            DAEDALUS_FAIL(std::string("expected " #lhs " == " #rhs "\n") +           \
-                          "             actual: " +                                 \
-                          ::daedalus::testing::stringify(daedalus_lhs) + "\n" +     \
-                          "           expected: " +                                 \
-                          ::daedalus::testing::stringify(daedalus_rhs));            \
+#define CHECK_EQ(lhs, rhs)                                                                         \
+    do {                                                                                           \
+        const auto daedalus_lhs = (lhs);                                                           \
+        const auto daedalus_rhs = (rhs);                                                           \
+        if (!(daedalus_lhs == daedalus_rhs))                                                       \
+            DAEDALUS_FAIL(std::string("expected " #lhs " == " #rhs "\n") +                         \
+                          "             actual: " + ::daedalus::testing::stringify(daedalus_lhs) + \
+                          "\n" +                                                                   \
+                          "           expected: " + ::daedalus::testing::stringify(daedalus_rhs)); \
     } while (false)
 
 #define CHECK_NE(lhs, rhs)                                                          \
     do {                                                                            \
+        const auto daedalus_lhs = (lhs);                                            \
+        const auto daedalus_rhs = (rhs);                                            \
+        if ((daedalus_lhs == daedalus_rhs))                                         \
+            DAEDALUS_FAIL(std::string("expected " #lhs " != " #rhs ", both are ") + \
+                          ::daedalus::testing::stringify(daedalus_lhs));            \
+    } while (false)
+
+#define CHECK_LT(lhs, rhs)                                                         \
+    do {                                                                           \
         const auto daedalus_lhs = (lhs);                                           \
         const auto daedalus_rhs = (rhs);                                           \
-        if ((daedalus_lhs == daedalus_rhs))                                          \
-            DAEDALUS_FAIL(std::string("expected " #lhs " != " #rhs ", both are ") +   \
-                          ::daedalus::testing::stringify(daedalus_lhs));             \
+        if (!(daedalus_lhs < daedalus_rhs))                                        \
+            DAEDALUS_FAIL(std::string("expected " #lhs " < " #rhs ", got ") +      \
+                          ::daedalus::testing::stringify(daedalus_lhs) + " and " + \
+                          ::daedalus::testing::stringify(daedalus_rhs));           \
     } while (false)
 
-#define CHECK_LT(lhs, rhs)                                                          \
-    do {                                                                            \
+#define CHECK_LE(lhs, rhs)                                                         \
+    do {                                                                           \
         const auto daedalus_lhs = (lhs);                                           \
         const auto daedalus_rhs = (rhs);                                           \
-        if (!(daedalus_lhs < daedalus_rhs))                                          \
-            DAEDALUS_FAIL(std::string("expected " #lhs " < " #rhs ", got ") +         \
-                          ::daedalus::testing::stringify(daedalus_lhs) + " and " +   \
-                          ::daedalus::testing::stringify(daedalus_rhs));             \
+        if (!(daedalus_lhs <= daedalus_rhs))                                       \
+            DAEDALUS_FAIL(std::string("expected " #lhs " <= " #rhs ", got ") +     \
+                          ::daedalus::testing::stringify(daedalus_lhs) + " and " + \
+                          ::daedalus::testing::stringify(daedalus_rhs));           \
     } while (false)
 
-#define CHECK_LE(lhs, rhs)                                                          \
-    do {                                                                            \
-        const auto daedalus_lhs = (lhs);                                           \
-        const auto daedalus_rhs = (rhs);                                           \
-        if (!(daedalus_lhs <= daedalus_rhs))                                         \
-            DAEDALUS_FAIL(std::string("expected " #lhs " <= " #rhs ", got ") +        \
-                          ::daedalus::testing::stringify(daedalus_lhs) + " and " +   \
-                          ::daedalus::testing::stringify(daedalus_rhs));             \
+#define CHECK_NEAR(lhs, rhs, tolerance)                                                   \
+    do {                                                                                  \
+        const double daedalus_diff = static_cast<double>(lhs) - static_cast<double>(rhs); \
+        const double daedalus_abs = daedalus_diff < 0 ? -daedalus_diff : daedalus_diff;   \
+        if (!(daedalus_abs <= static_cast<double>(tolerance)))                            \
+            DAEDALUS_FAIL(std::string("expected " #lhs " ~= " #rhs " within " #tolerance  \
+                                      ", difference was ") +                              \
+                          std::to_string(daedalus_abs));                                  \
     } while (false)
 
-#define CHECK_NEAR(lhs, rhs, tolerance)                                              \
-    do {                                                                             \
-        const double daedalus_diff =                                                 \
-            static_cast<double>(lhs) - static_cast<double>(rhs);                     \
-        const double daedalus_abs = daedalus_diff < 0 ? -daedalus_diff : daedalus_diff; \
-        if (!(daedalus_abs <= static_cast<double>(tolerance)))                       \
-            DAEDALUS_FAIL(std::string("expected " #lhs " ~= " #rhs " within " #tolerance \
-                                      ", difference was ") +                          \
-                          std::to_string(daedalus_abs));                              \
+#define CHECK_THROWS_AS(expr, ExceptionType)                                                       \
+    do {                                                                                           \
+        bool daedalus_threw = false;                                                               \
+        try {                                                                                      \
+            (void)(expr);                                                                          \
+        } catch (const ExceptionType&) {                                                           \
+            daedalus_threw = true;                                                                 \
+        } catch (const std::exception& daedalus_ex) {                                              \
+            DAEDALUS_FAIL(std::string("expected " #ExceptionType " from " #expr                    \
+                                      " but got a different exception: ") +                        \
+                          daedalus_ex.what());                                                     \
+        }                                                                                          \
+        if (!daedalus_threw)                                                                       \
+            DAEDALUS_FAIL(                                                                         \
+                std::string("expected " #ExceptionType " from " #expr " but nothing was thrown")); \
     } while (false)
 
-#define CHECK_THROWS_AS(expr, ExceptionType)                                         \
-    do {                                                                             \
-        bool daedalus_threw = false;                                                 \
-        try {                                                                        \
-            (void)(expr);                                                            \
-        } catch (const ExceptionType&) {                                             \
-            daedalus_threw = true;                                                   \
-        } catch (const std::exception& daedalus_ex) {                                \
-            DAEDALUS_FAIL(std::string("expected " #ExceptionType " from " #expr       \
-                                      " but got a different exception: ") +           \
-                          daedalus_ex.what());                                        \
-        }                                                                            \
-        if (!daedalus_threw)                                                          \
-            DAEDALUS_FAIL(std::string("expected " #ExceptionType " from " #expr        \
-                                      " but nothing was thrown"));                     \
+#define CHECK_NO_THROW(expr)                                                                \
+    do {                                                                                    \
+        try {                                                                               \
+            (void)(expr);                                                                   \
+        } catch (const std::exception& daedalus_ex) {                                       \
+            DAEDALUS_FAIL(std::string(#expr " threw unexpectedly: ") + daedalus_ex.what()); \
+        }                                                                                   \
     } while (false)
 
-#define CHECK_NO_THROW(expr)                                                          \
-    do {                                                                              \
-        try {                                                                         \
-            (void)(expr);                                                             \
-        } catch (const std::exception& daedalus_ex) {                                 \
-            DAEDALUS_FAIL(std::string(#expr " threw unexpectedly: ") +                 \
-                          daedalus_ex.what());                                         \
-        }                                                                             \
-    } while (false)
-
-#endif  // DAEDALUS_TEST_FRAMEWORK_HPP
+#endif   // DAEDALUS_TEST_FRAMEWORK_HPP

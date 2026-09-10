@@ -214,9 +214,7 @@ public:
     }
 
     /// True when some root-to-leaf path sums exactly to `target`.
-    [[nodiscard]] bool hasPathSum(const T& target) const {
-        return pathSumExists(root_, target);
-    }
+    [[nodiscard]] bool hasPathSum(const T& target) const { return pathSumExists(root_, target); }
 
     /// Largest sum along any downward root-to-leaf path.
     [[nodiscard]] std::optional<T> maxRootToLeafSum() const {
@@ -367,7 +365,7 @@ private:
         if (node->value == a || node->value == b) return node;
         const Node* left = lcaSearch(node->left, a, b);
         const Node* right = lcaSearch(node->right, a, b);
-        if (left != nullptr && right != nullptr) return node;  // split point
+        if (left != nullptr && right != nullptr) return node;   // split point
         return left != nullptr ? left : right;
     }
 
@@ -416,6 +414,6 @@ private:
     size_type size_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_BINARY_TREE_HPP
+#endif   // DAEDALUS_TREES_BINARY_TREE_HPP

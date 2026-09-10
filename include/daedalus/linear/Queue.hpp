@@ -73,6 +73,6 @@ private:
     Store store_;
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_LINEAR_QUEUE_HPP
+#endif   // DAEDALUS_LINEAR_QUEUE_HPP

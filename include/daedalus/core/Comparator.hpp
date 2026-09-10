@@ -103,6 +103,6 @@ template <typename T>
     return std::make_shared<const Descending<T>>();
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_CORE_COMPARATOR_HPP
+#endif   // DAEDALUS_CORE_COMPARATOR_HPP

@@ -70,8 +70,8 @@ namespace daedalus {
 /// for every value below 2^64, so this is exact, not probabilistic.
 [[nodiscard]] inline bool isPrime(std::uint64_t n) {
     if (n < 2) return false;
-    for (std::uint64_t small : {2ull, 3ull, 5ull, 7ull, 11ull, 13ull, 17ull, 19ull, 23ull,
-                                29ull, 31ull, 37ull}) {
+    for (std::uint64_t small :
+         {2ull, 3ull, 5ull, 7ull, 11ull, 13ull, 17ull, 19ull, 23ull, 29ull, 31ull, 37ull}) {
         if (n % small == 0) return n == small;
     }
 
@@ -83,8 +83,8 @@ namespace daedalus {
         ++r;
     }
 
-    for (std::uint64_t witness : {2ull, 325ull, 9375ull, 28178ull, 450775ull, 9780504ull,
-                                  1795265022ull}) {
+    for (std::uint64_t witness :
+         {2ull, 325ull, 9375ull, 28178ull, 450775ull, 9780504ull, 1795265022ull}) {
         const std::uint64_t base = witness % n;
         // A witness that is a multiple of n carries no information: it reduces
         // to 0, every power stays 0, and the test would wrongly call n
@@ -268,8 +268,8 @@ struct BezoutIdentity {
         if (difference % identity.gcd != 0) return std::nullopt;   // inconsistent
 
         const long long step = moduli[i] / identity.gcd;
-        const long long multiplier = ((difference / identity.gcd) % step) * (identity.x % step) %
-                                     step;
+        const long long multiplier =
+            ((difference / identity.gcd) % step) * (identity.x % step) % step;
         result += lcm * multiplier;
         lcm *= step;
         result = ((result % lcm) + lcm) % lcm;
@@ -324,6 +324,6 @@ struct BezoutIdentity {
     return Doubler{}.compute(n).first;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_NUMBER_THEORY_HPP
+#endif   // DAEDALUS_ALGORITHMS_NUMBER_THEORY_HPP

@@ -30,7 +30,7 @@ std::vector<int> shuffledRange(int count, std::uint32_t seed) {
     return values;
 }
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  BinaryHeap
@@ -164,9 +164,9 @@ DAEDALUS_TEST(SegmentTree, matches_brute_force_under_random_load) {
         std::size_t left = index(rng);
         std::size_t right = index(rng);
         if (left > right) std::swap(left, right);
-        const int expected = std::accumulate(
-            array.begin() + static_cast<std::ptrdiff_t>(left),
-            array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0);
+        const int expected =
+            std::accumulate(array.begin() + static_cast<std::ptrdiff_t>(left),
+                            array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0);
         CHECK_EQ(tree.query(left, right), expected);
     }
 }
@@ -183,7 +183,7 @@ DAEDALUS_TEST(SegmentTree, rejects_bad_ranges) {
 DAEDALUS_TEST(SegmentTree, lazy_range_add_then_query) {
     LazySegmentTree<int> tree(std::vector<int>{1, 2, 3, 4, 5});
     CHECK_EQ(tree.query(0, 4), 15);
-    tree.rangeAdd(1, 3, 10);          // -> 1, 12, 13, 14, 5
+    tree.rangeAdd(1, 3, 10);   // -> 1, 12, 13, 14, 5
     CHECK_EQ(tree.query(0, 4), 45);
     CHECK_EQ(tree.query(1, 3), 39);
     CHECK_EQ(tree.at(0), 1);
@@ -209,9 +209,9 @@ DAEDALUS_TEST(SegmentTree, lazy_matches_brute_force_under_random_load) {
             for (std::size_t i = left; i <= right; ++i) array[i] += delta;
             tree.rangeAdd(left, right, delta);
         } else {
-            const long long expected = std::accumulate(
-                array.begin() + static_cast<std::ptrdiff_t>(left),
-                array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0LL);
+            const long long expected =
+                std::accumulate(array.begin() + static_cast<std::ptrdiff_t>(left),
+                                array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0LL);
             CHECK_EQ(tree.query(left, right), expected);
         }
     }
@@ -259,9 +259,9 @@ DAEDALUS_TEST(FenwickTree, matches_brute_force_under_random_load) {
             std::size_t left = index(rng);
             std::size_t right = index(rng);
             if (left > right) std::swap(left, right);
-            const long long expected = std::accumulate(
-                array.begin() + static_cast<std::ptrdiff_t>(left),
-                array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0LL);
+            const long long expected =
+                std::accumulate(array.begin() + static_cast<std::ptrdiff_t>(left),
+                                array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0LL);
             CHECK_EQ(tree.rangeSum(left, right), expected);
         }
     }
@@ -287,13 +287,13 @@ DAEDALUS_TEST(FenwickTree, rejects_bad_indices) {
 
 DAEDALUS_TEST(FenwickTree, range_update_range_query) {
     RangeFenwickTree<long long> tree(6);
-    tree.rangeAdd(1, 3, 5);            // -> 0, 5, 5, 5, 0, 0
+    tree.rangeAdd(1, 3, 5);   // -> 0, 5, 5, 5, 0, 0
     CHECK_EQ(tree.at(0), 0);
     CHECK_EQ(tree.at(1), 5);
     CHECK_EQ(tree.at(3), 5);
     CHECK_EQ(tree.at(4), 0);
     CHECK_EQ(tree.rangeSum(0, 5), 15);
-    tree.rangeAdd(0, 5, 2);            // -> 2, 7, 7, 7, 2, 2
+    tree.rangeAdd(0, 5, 2);   // -> 2, 7, 7, 7, 2, 2
     CHECK_EQ(tree.rangeSum(0, 5), 27);
     CHECK_EQ(tree.rangeSum(2, 4), 16);
 }
@@ -314,9 +314,9 @@ DAEDALUS_TEST(FenwickTree, range_variant_matches_brute_force) {
             for (std::size_t i = left; i <= right; ++i) array[i] += delta;
             tree.rangeAdd(left, right, delta);
         } else {
-            const long long expected = std::accumulate(
-                array.begin() + static_cast<std::ptrdiff_t>(left),
-                array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0LL);
+            const long long expected =
+                std::accumulate(array.begin() + static_cast<std::ptrdiff_t>(left),
+                                array.begin() + static_cast<std::ptrdiff_t>(right) + 1, 0LL);
             CHECK_EQ(tree.rangeSum(left, right), expected);
         }
     }
@@ -343,8 +343,7 @@ DAEDALUS_TEST(Trie, completions_are_sorted) {
     Trie trie{"care", "car", "card", "cat", "dog"};
     CHECK_EQ(trie.withPrefix("car"), (std::vector<std::string>{"car", "card", "care"}));
     CHECK_EQ(trie.withPrefix("ca"), (std::vector<std::string>{"car", "card", "care", "cat"}));
-    CHECK_EQ(trie.words(),
-             (std::vector<std::string>{"car", "card", "care", "cat", "dog"}));
+    CHECK_EQ(trie.words(), (std::vector<std::string>{"car", "card", "care", "cat", "dog"}));
     CHECK_EQ(trie.withPrefix("zebra"), (std::vector<std::string>{}));
 }
 
@@ -352,14 +351,14 @@ DAEDALUS_TEST(Trie, erase_prunes_dead_branches) {
     Trie trie{"car", "card"};
     const std::size_t before = trie.nodeCount();
     CHECK_TRUE(trie.erase("card"));
-    CHECK_LT(trie.nodeCount(), before);          // the 'd' node is gone
-    CHECK_TRUE(trie.contains("car"));            // the shared prefix survives
+    CHECK_LT(trie.nodeCount(), before);   // the 'd' node is gone
+    CHECK_TRUE(trie.contains("car"));     // the shared prefix survives
     CHECK_FALSE(trie.contains("card"));
     CHECK_EQ(trie.countWithPrefix("car"), 1u);
     CHECK_FALSE(trie.erase("card"));
     CHECK_TRUE(trie.erase("car"));
     CHECK_TRUE(trie.empty());
-    CHECK_EQ(trie.nodeCount(), 1u);              // only the root remains
+    CHECK_EQ(trie.nodeCount(), 1u);   // only the root remains
 }
 
 DAEDALUS_TEST(Trie, duplicate_insert_is_a_no_op) {
@@ -512,8 +511,8 @@ DAEDALUS_TEST(BinaryTree, invert_mirrors_the_tree) {
 
 DAEDALUS_TEST(BinaryTree, symmetry) {
     CHECK_TRUE(BinaryTree<int>::fromLevelOrder({1, 2, 2, 3, 4, 4, 3}).isSymmetric());
-    CHECK_FALSE(BinaryTree<int>::fromLevelOrder({1, 2, 2, std::nullopt, 3, std::nullopt, 3})
-                    .isSymmetric());
+    CHECK_FALSE(
+        BinaryTree<int>::fromLevelOrder({1, 2, 2, std::nullopt, 3, std::nullopt, 3}).isSymmetric());
     CHECK_TRUE(BinaryTree<int>().isSymmetric());
 }
 
@@ -524,13 +523,12 @@ DAEDALUS_TEST(BinaryTree, path_algorithms) {
      *    /     / \
      *   11    13  4
      */
-    auto tree = BinaryTree<int>::fromLevelOrder(
-        {5, 4, 8, 11, std::nullopt, 13, 4});
+    auto tree = BinaryTree<int>::fromLevelOrder({5, 4, 8, 11, std::nullopt, 13, 4});
     const auto paths = tree.rootToLeafPaths();
     CHECK_EQ(paths.size(), 3u);
     CHECK_EQ(paths[0], (std::vector<int>{5, 4, 11}));
-    CHECK_TRUE(tree.hasPathSum(20));    // 5 + 4 + 11
-    CHECK_TRUE(tree.hasPathSum(26));    // 5 + 8 + 13
+    CHECK_TRUE(tree.hasPathSum(20));   // 5 + 4 + 11
+    CHECK_TRUE(tree.hasPathSum(26));   // 5 + 8 + 13
     CHECK_FALSE(tree.hasPathSum(99));
     CHECK_EQ(tree.maxRootToLeafSum().value(), 26);
     CHECK_FALSE(BinaryTree<int>().maxRootToLeafSum().has_value());

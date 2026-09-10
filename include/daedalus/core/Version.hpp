@@ -15,9 +15,8 @@ namespace daedalus {
 
 /// Semantic version of the library, e.g. "1.0.0".
 [[nodiscard]] inline std::string version() {
-    return std::to_string(DAEDALUS_VERSION_MAJOR) + '.' +
-           std::to_string(DAEDALUS_VERSION_MINOR) + '.' +
-           std::to_string(DAEDALUS_VERSION_PATCH);
+    return std::to_string(DAEDALUS_VERSION_MAJOR) + '.' + std::to_string(DAEDALUS_VERSION_MINOR) +
+           '.' + std::to_string(DAEDALUS_VERSION_PATCH);
 }
 
 /// Human-readable banner used by the CLI and by `--version` output.
@@ -25,6 +24,6 @@ namespace daedalus {
     return "Daedalus " + version() + " - C++20 data structures & algorithms library";
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_CORE_VERSION_HPP
+#endif   // DAEDALUS_CORE_VERSION_HPP

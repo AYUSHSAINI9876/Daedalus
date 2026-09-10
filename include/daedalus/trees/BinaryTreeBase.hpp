@@ -38,9 +38,9 @@ enum class TraversalOrder { PreOrder, InOrder, PostOrder, LevelOrder };
 
 [[nodiscard]] inline std::string toString(TraversalOrder order) {
     switch (order) {
-        case TraversalOrder::PreOrder:   return "pre-order";
-        case TraversalOrder::InOrder:    return "in-order";
-        case TraversalOrder::PostOrder:  return "post-order";
+        case TraversalOrder::PreOrder: return "pre-order";
+        case TraversalOrder::InOrder: return "in-order";
+        case TraversalOrder::PostOrder: return "post-order";
         case TraversalOrder::LevelOrder: return "level-order";
     }
     return "unknown";
@@ -141,9 +141,9 @@ public:
 
     [[nodiscard]] std::vector<T> traversal(TraversalOrder order) const {
         switch (order) {
-            case TraversalOrder::PreOrder:   return preOrder();
-            case TraversalOrder::InOrder:    return inOrder();
-            case TraversalOrder::PostOrder:  return postOrder();
+            case TraversalOrder::PreOrder: return preOrder();
+            case TraversalOrder::InOrder: return inOrder();
+            case TraversalOrder::PostOrder: return postOrder();
             case TraversalOrder::LevelOrder: return levelOrder();
         }
         return {};
@@ -256,10 +256,10 @@ public:
                 predecessor = predecessor->right;
             }
             if (predecessor->right == nullptr) {
-                predecessor->right = current;      // thread
+                predecessor->right = current;   // thread
                 current = current->left;
             } else {
-                predecessor->right = nullptr;      // unthread, subtree done
+                predecessor->right = nullptr;   // unthread, subtree done
                 out.push_back(current->value);
                 current = current->right;
             }
@@ -280,9 +280,7 @@ public:
 
     /// Verifies the search-tree invariant across the whole tree. Used by the
     /// tests after every insert/erase sequence.
-    [[nodiscard]] bool isValidBST() const {
-        return checkBST(root_, nullptr, nullptr);
-    }
+    [[nodiscard]] bool isValidBST() const { return checkBST(root_, nullptr, nullptr); }
 
     /// True when no node's subtree heights differ by more than one.
     [[nodiscard]] bool isBalanced() const { return balancedHeight(root_) >= -1; }
@@ -514,6 +512,6 @@ private:
     }
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_BINARY_TREE_BASE_HPP
+#endif   // DAEDALUS_TREES_BINARY_TREE_BASE_HPP

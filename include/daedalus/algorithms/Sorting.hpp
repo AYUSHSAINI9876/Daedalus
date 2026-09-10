@@ -139,8 +139,7 @@ public:
     }
 
     /// Exposed so IntroSort and TimSort can reuse it on a sub-range.
-    void sortRange(std::vector<T>& data, std::size_t first, std::size_t last,
-                   const Compare& less) {
+    void sortRange(std::vector<T>& data, std::size_t first, std::size_t last, const Compare& less) {
         for (std::size_t i = first + 1; i < last; ++i) {
             T key = std::move(data[i]);
             std::size_t j = i;
@@ -245,8 +244,8 @@ public:
     [[nodiscard]] std::string worstComplexity() const override { return "O(n log n)"; }
 
 private:
-    void split(std::vector<T>& data, std::vector<T>& scratch, std::size_t first,
-               std::size_t last, const Compare& less) {
+    void split(std::vector<T>& data, std::vector<T>& scratch, std::size_t first, std::size_t last,
+               const Compare& less) {
         if (last - first < 2) return;
         const std::size_t middle = first + (last - first) / 2;
         if (this->hasObservers()) this->emit(EventType::Partition, first, last);
@@ -255,8 +254,8 @@ private:
         merge(data, scratch, first, middle, last, less);
     }
 
-    void merge(std::vector<T>& data, std::vector<T>& scratch, std::size_t first,
-               std::size_t middle, std::size_t last, const Compare& less) {
+    void merge(std::vector<T>& data, std::vector<T>& scratch, std::size_t first, std::size_t middle,
+               std::size_t last, const Compare& less) {
         std::size_t left = first;
         std::size_t right = middle;
         std::size_t out = first;
@@ -300,8 +299,7 @@ public:
     [[nodiscard]] std::string worstComplexity() const override { return "O(n^2)"; }
 
 private:
-    void quicksort(std::vector<T>& data, std::size_t low, std::size_t high,
-                   const Compare& less) {
+    void quicksort(std::vector<T>& data, std::size_t low, std::size_t high, const Compare& less) {
         while (low < high) {
             if (high - low < 12) {   // small ranges: insertion sort wins outright
                 insertion_.sortRange(data, low, high + 1, less);
@@ -366,8 +364,7 @@ public:
     }
 
     /// Exposed for IntroSort's fallback path.
-    void sortRange(std::vector<T>& data, std::size_t first, std::size_t last,
-                   const Compare& less) {
+    void sortRange(std::vector<T>& data, std::size_t first, std::size_t last, const Compare& less) {
         const std::size_t count = last - first;
         if (count < 2) return;
         for (std::size_t i = count / 2; i-- > 0;) siftDown(data, first, i, count, less);
@@ -528,8 +525,8 @@ public:
     [[nodiscard]] std::string worstComplexity() const override { return "O(n log n)"; }
 
 private:
-    void merge(std::vector<T>& data, std::vector<T>& scratch, std::size_t first,
-               std::size_t middle, std::size_t last, const Compare& less) {
+    void merge(std::vector<T>& data, std::vector<T>& scratch, std::size_t first, std::size_t middle,
+               std::size_t last, const Compare& less) {
         std::size_t left = first;
         std::size_t right = middle;
         std::size_t out = first;
@@ -574,8 +571,7 @@ public:
         const auto bounds = std::minmax_element(data.begin(), data.end());
         const long long smallest = static_cast<long long>(*bounds.first);
         const long long largest = static_cast<long long>(*bounds.second);
-        const unsigned long long span =
-            static_cast<unsigned long long>(largest - smallest) + 1ull;
+        const unsigned long long span = static_cast<unsigned long long>(largest - smallest) + 1ull;
         if (span > kMaximumRange) {
             throw InvalidArgument("counting sort needs a bounded key range; use radix or quick");
         }
@@ -721,9 +717,8 @@ template <typename T>
 /// Names accepted by makeSortStrategy for the given element type.
 template <typename T>
 [[nodiscard]] std::vector<std::string> availableSortStrategies() {
-    std::vector<std::string> names{"bubble", "insertion", "selection", "shell",
-                                   "merge",  "quick",     "heap",      "intro",
-                                   "tim"};
+    std::vector<std::string> names{"bubble", "insertion", "selection", "shell", "merge",
+                                   "quick",  "heap",      "intro",     "tim"};
     if constexpr (std::is_arithmetic_v<T>) {
         names.push_back("bucket");
     }
@@ -750,6 +745,6 @@ template <typename T>
     return true;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_SORTING_HPP
+#endif   // DAEDALUS_ALGORITHMS_SORTING_HPP

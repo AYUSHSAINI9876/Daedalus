@@ -66,7 +66,7 @@ std::vector<int> iota(int count, int start = 0) {
     return values;
 }
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  DynamicArray
@@ -132,7 +132,7 @@ DAEDALUS_TEST(DynamicArray, erase_by_index_and_value) {
     DynamicArray<int> array{1, 2, 3, 2};
     CHECK_EQ(array.eraseAt(0), 1);
     CHECK_EQ(array.toVector(), (std::vector<int>{2, 3, 2}));
-    CHECK_TRUE(array.erase(2));                       // removes the first 2 only
+    CHECK_TRUE(array.erase(2));   // removes the first 2 only
     CHECK_EQ(array.toVector(), (std::vector<int>{3, 2}));
     CHECK_FALSE(array.erase(42));
     CHECK_THROWS_AS(array.eraseAt(5), IndexOutOfRange);
@@ -241,7 +241,7 @@ DAEDALUS_TEST(SinglyLinkedList, insert_and_erase_at_index) {
     list.insertAt(4, 5);
     CHECK_EQ(list.back(), 5);
     CHECK_EQ(list.eraseAt(0), 1);
-    CHECK_EQ(list.eraseAt(3), 5);          // erasing the tail must move tail_
+    CHECK_EQ(list.eraseAt(3), 5);   // erasing the tail must move tail_
     CHECK_EQ(list.toVector(), (std::vector<int>{2, 3, 4}));
     list.pushBack(6);
     CHECK_EQ(list.back(), 6);
@@ -350,7 +350,7 @@ DAEDALUS_TEST(DoublyLinkedList, bidirectional_iteration) {
 DAEDALUS_TEST(DoublyLinkedList, erase_by_iterator_is_constant_time) {
     DoublyLinkedList<int> list{1, 2, 3, 4};
     auto it = list.begin();
-    ++it;                       // -> 2
+    ++it;   // -> 2
     auto next = list.erase(it);
     CHECK_EQ(*next, 3);
     CHECK_EQ(list.toVector(), (std::vector<int>{1, 3, 4}));
@@ -401,7 +401,7 @@ DAEDALUS_TEST(DoublyLinkedList, copy_move_and_swap) {
 
     DoublyLinkedList<int> moved = std::move(copy);
     CHECK_EQ(moved.size(), 4u);
-    moved.pushBack(5);              // moved-from source must still be usable
+    moved.pushBack(5);   // moved-from source must still be usable
     CHECK_EQ(moved.size(), 5u);
 }
 
@@ -426,8 +426,7 @@ DAEDALUS_TEST(Deque, wraps_around_the_ring) {
     for (int i = 0; i < 5; ++i) deque.pushBack(i);
     for (int i = 0; i < 3; ++i) (void)deque.popFront();
     for (int i = 100; i < 108; ++i) deque.pushBack(i);
-    CHECK_EQ(deque.toVector(),
-             (std::vector<int>{3, 4, 100, 101, 102, 103, 104, 105, 106, 107}));
+    CHECK_EQ(deque.toVector(), (std::vector<int>{3, 4, 100, 101, 102, 103, 104, 105, 106, 107}));
 }
 
 DAEDALUS_TEST(Deque, push_front_walks_head_backwards) {
@@ -659,6 +658,5 @@ DAEDALUS_TEST(SkipList, copy_is_independent) {
 DAEDALUS_TEST(SkipList, works_with_strings) {
     SkipList<std::string> list;
     for (const char* word : {"pear", "apple", "fig"}) list.insert(word);
-    CHECK_EQ(list.toVector(),
-             (std::vector<std::string>{"apple", "fig", "pear"}));
+    CHECK_EQ(list.toVector(), (std::vector<std::string>{"apple", "fig", "pear"}));
 }

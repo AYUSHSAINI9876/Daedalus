@@ -136,7 +136,7 @@ using SudokuGrid = std::vector<std::vector<int>>;   ///< 9x9, zero means empty
             const int given = grid[row][column];
             if (given == 0) continue;
             if (given < 1 || given > 9) return false;
-            grid[row][column] = 0;                       // hide it from its own check
+            grid[row][column] = 0;   // hide it from its own check
             const bool consistent = allowed(row, column, given);
             grid[row][column] = given;
             if (!consistent) return false;
@@ -299,9 +299,9 @@ template <typename T>
                 results.push_back(current);
                 return;
             }
-            generate(index + 1);              // skip values[index]
+            generate(index + 1);   // skip values[index]
             current.push_back(values[index]);
-            generate(index + 1);              // take it
+            generate(index + 1);   // take it
             current.pop_back();
         }
     };
@@ -441,8 +441,7 @@ template <typename T>
             used[row][column] = true;
             const bool found = find(row + 1, column, index + 1) ||
                                find(row, column + 1, index + 1) ||
-                               find(row - 1, column, index + 1) ||
-                               find(row, column - 1, index + 1);
+                               find(row - 1, column, index + 1) || find(row, column - 1, index + 1);
             used[row][column] = false;
             return found;
         }
@@ -498,6 +497,6 @@ template <typename T>
     return assignment;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_BACKTRACKING_HPP
+#endif   // DAEDALUS_ALGORITHMS_BACKTRACKING_HPP

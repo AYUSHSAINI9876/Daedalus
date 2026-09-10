@@ -53,8 +53,7 @@ public:
     explicit SkipList(std::uint32_t seed = 0x9E3779B9u, Compare compare = Compare())
         : compare_(compare), rng_(seed), head_(kMaxLevel, nullptr), seed_(seed) {}
 
-    SkipList(std::initializer_list<T> values, std::uint32_t seed = 0x9E3779B9u)
-        : SkipList(seed) {
+    SkipList(std::initializer_list<T> values, std::uint32_t seed = 0x9E3779B9u) : SkipList(seed) {
         for (const T& value : values) insert(value);
     }
 
@@ -114,7 +113,7 @@ public:
         Node* current = descend(value, update);
 
         Node* next = linkAt(current, 0);
-        if (next != nullptr && !compare_(value, next->value)) return;  // already present
+        if (next != nullptr && !compare_(value, next->value)) return;   // already present
 
         const std::size_t newLevel = randomLevel();
         if (newLevel > level_) level_ = newLevel;
@@ -248,6 +247,6 @@ private:
     std::uint32_t seed_{0x9E3779B9u};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_LINEAR_SKIP_LIST_HPP
+#endif   // DAEDALUS_LINEAR_SKIP_LIST_HPP

@@ -202,7 +202,7 @@ namespace detail {
     return stripLeadingZeros(result);
 }
 
-}  // namespace detail
+}   // namespace detail
 
 [[nodiscard]] inline std::string karatsubaMultiply(const std::string& a, const std::string& b) {
     for (char c : a + b) {
@@ -381,6 +381,6 @@ template <typename T>
     return std::nullopt;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_DIVIDE_AND_CONQUER_HPP
+#endif   // DAEDALUS_ALGORITHMS_DIVIDE_AND_CONQUER_HPP

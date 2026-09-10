@@ -30,7 +30,9 @@ namespace {
 
 std::atomic<bool> g_stopRequested{false};
 
-extern "C" void handleSignal(int) { g_stopRequested.store(true); }
+extern "C" void handleSignal(int) {
+    g_stopRequested.store(true);
+}
 
 struct Options {
     std::string host{"127.0.0.1"};
@@ -43,17 +45,16 @@ struct Options {
 };
 
 void printUsage(const char* program) {
-    std::cout
-        << daedalus::banner() << "\n\n"
-        << "usage: " << program << " [options]\n"
-        << "  --host <address>     bind address (default 127.0.0.1)\n"
-        << "  --port <number>      port, 0 for any free port (default 8080)\n"
-        << "  --web-root <dir>     directory holding index.html (default web)\n"
-        << "  --workers <count>    worker threads (default 4)\n"
-        << "  --seed               create the three demo accounts\n"
-        << "  --allow-weak-seed    permit --seed on a non-loopback address\n"
-        << "  --quiet              do not log each request\n"
-        << "  --help               this message\n";
+    std::cout << daedalus::banner() << "\n\n"
+              << "usage: " << program << " [options]\n"
+              << "  --host <address>     bind address (default 127.0.0.1)\n"
+              << "  --port <number>      port, 0 for any free port (default 8080)\n"
+              << "  --web-root <dir>     directory holding index.html (default web)\n"
+              << "  --workers <count>    worker threads (default 4)\n"
+              << "  --seed               create the three demo accounts\n"
+              << "  --allow-weak-seed    permit --seed on a non-loopback address\n"
+              << "  --quiet              do not log each request\n"
+              << "  --help               this message\n";
 }
 
 /// The demo accounts. One shared passphrase, and it deliberately does not
@@ -71,7 +72,7 @@ void seedAccounts(auth::AuthService& service) {
               << "  password:        " << passphrase << "\n";
 }
 
-}  // namespace
+}   // namespace
 
 int main(int argc, char** argv) {
     Options options;
@@ -134,9 +135,8 @@ int main(int argc, char** argv) {
         net::HttpServer server(router, config);
         if (!options.quiet) {
             server.setAccessLogger([](const net::RequestRecord& record) {
-                std::cout << "  " << record.method << " " << record.path << " -> "
-                          << record.status << "  " << record.responseBytes << "B  "
-                          << record.milliseconds << "ms\n";
+                std::cout << "  " << record.method << " " << record.path << " -> " << record.status
+                          << "  " << record.responseBytes << "B  " << record.milliseconds << "ms\n";
             });
         }
 

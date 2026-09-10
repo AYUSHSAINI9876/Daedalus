@@ -41,7 +41,7 @@ class OpenAddressingMap final : public Map<K, V> {
         K key{};
         V value{};
         bool occupied{false};
-        std::size_t home{0};  ///< ideal bucket, cached to avoid rehashing
+        std::size_t home{0};   ///< ideal bucket, cached to avoid rehashing
     };
 
 public:
@@ -55,9 +55,9 @@ public:
     OpenAddressingMap() : slots_(nextHashTableSize(11)) {}
 
     explicit OpenAddressingMap(size_type expectedElements)
-        : slots_(nextHashTableSize(
-              static_cast<size_type>(static_cast<double>(expectedElements) /
-                                     kDefaultMaxLoadFactor) + 1)) {}
+        : slots_(nextHashTableSize(static_cast<size_type>(static_cast<double>(expectedElements) /
+                                                          kDefaultMaxLoadFactor) +
+                                   1)) {}
 
     OpenAddressingMap(std::initializer_list<value_type> entries) : OpenAddressingMap() {
         for (const auto& entry : entries) put(entry.first, entry.second);
@@ -99,9 +99,7 @@ public:
         return slots_[found].value;
     }
 
-    [[nodiscard]] bool contains(const K& key) const override {
-        return findSlot(key) != kNotFound;
-    }
+    [[nodiscard]] bool contains(const K& key) const override { return findSlot(key) != kNotFound; }
 
     [[nodiscard]] V& at(const K& key) {
         const size_type found = findSlot(key);
@@ -138,8 +136,8 @@ public:
 
     void reserve(size_type expectedElements) {
         const size_type wanted = nextHashTableSize(
-            static_cast<size_type>(static_cast<double>(expectedElements) /
-                                   kDefaultMaxLoadFactor) + 1);
+            static_cast<size_type>(static_cast<double>(expectedElements) / kDefaultMaxLoadFactor) +
+            1);
         if (wanted > slots_.size()) rehash(wanted);
     }
 
@@ -229,6 +227,6 @@ private:
     size_type size_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_HASHING_OPEN_ADDRESSING_MAP_HPP
+#endif   // DAEDALUS_HASHING_OPEN_ADDRESSING_MAP_HPP

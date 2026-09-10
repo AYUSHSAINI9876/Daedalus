@@ -34,7 +34,7 @@ template <typename T>
 class BTree final : public SortedSet<T> {
     struct Node {
         std::vector<T> keys;
-        std::vector<Node*> children;  ///< empty when `leaf`
+        std::vector<Node*> children;   ///< empty when `leaf`
         bool leaf{true};
 
         ~Node() {
@@ -52,8 +52,7 @@ public:
         root_ = new Node();
     }
 
-    BTree(std::initializer_list<T> values, std::size_t minimumDegree = 3)
-        : BTree(minimumDegree) {
+    BTree(std::initializer_list<T> values, std::size_t minimumDegree = 3) : BTree(minimumDegree) {
         for (const T& value : values) insert(value);
     }
 
@@ -170,7 +169,7 @@ public:
         if (root_->keys.empty() && !root_->leaf) {
             Node* oldRoot = root_;
             root_ = oldRoot->children[0];
-            oldRoot->children.clear();  // ownership transferred
+            oldRoot->children.clear();   // ownership transferred
             delete oldRoot;
         }
         --size_;
@@ -230,9 +229,8 @@ private:
         right->keys.assign(full->keys.begin() + static_cast<std::ptrdiff_t>(median) + 1,
                            full->keys.end());
         if (!full->leaf) {
-            right->children.assign(
-                full->children.begin() + static_cast<std::ptrdiff_t>(minDegree_),
-                full->children.end());
+            right->children.assign(full->children.begin() + static_cast<std::ptrdiff_t>(minDegree_),
+                                   full->children.end());
             full->children.resize(minDegree_);
         }
         const T medianKey = full->keys[median];
@@ -270,7 +268,7 @@ private:
             }
             return;
         }
-        if (node->leaf) return;  // absent; contains() rules this out beforehand
+        if (node->leaf) return;   // absent; contains() rules this out beforehand
 
         const bool descendingIntoLast = (index == node->keys.size());
         if (node->children[index]->keys.size() < minDegree_) refill(node, index);
@@ -373,7 +371,7 @@ private:
         node->keys.erase(node->keys.begin() + static_cast<std::ptrdiff_t>(index));
         node->children.erase(node->children.begin() + static_cast<std::ptrdiff_t>(index) + 1);
 
-        right->children.clear();  // children were adopted by `left`
+        right->children.clear();   // children were adopted by `left`
         delete right;
     }
 
@@ -382,6 +380,6 @@ private:
     size_type size_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_B_TREE_HPP
+#endif   // DAEDALUS_TREES_B_TREE_HPP

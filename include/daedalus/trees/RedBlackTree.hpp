@@ -41,7 +41,7 @@ struct RBNode {
     RBNode* left{nullptr};
     RBNode* right{nullptr};
     RBNode* parent{nullptr};
-    RBColor color{RBColor::Red};  ///< new nodes start red; fixup may repaint
+    RBColor color{RBColor::Red};   ///< new nodes start red; fixup may repaint
 
     explicit RBNode(const T& v) : value(v) {}
 };
@@ -71,7 +71,7 @@ public:
             } else if (current->value < value) {
                 current = current->right;
             } else {
-                return;  // duplicate
+                return;   // duplicate
             }
         }
 
@@ -210,8 +210,8 @@ private:
     }
 
     void eraseNode(Node* z) noexcept {
-        Node* movedUp = nullptr;        // the node that took the removed slot
-        Node* movedUpParent = nullptr;  // tracked explicitly, movedUp may be null
+        Node* movedUp = nullptr;         // the node that took the removed slot
+        Node* movedUpParent = nullptr;   // tracked explicitly, movedUp may be null
         RBColor removedColor = z->color;
 
         if (z->left == nullptr) {
@@ -254,7 +254,7 @@ private:
 
             if (x == parent->left) {
                 Node* sibling = parent->right;
-                if (sibling == nullptr) break;  // cannot happen in a valid tree
+                if (sibling == nullptr) break;   // cannot happen in a valid tree
 
                 if (isRed(sibling)) {
                     // Case 1: recolour so the sibling becomes black.
@@ -341,11 +341,10 @@ private:
     static bool parentLinksConsistent(const Node* node, const Node* expectedParent) {
         if (node == nullptr) return true;
         if (node->parent != expectedParent) return false;
-        return parentLinksConsistent(node->left, node) &&
-               parentLinksConsistent(node->right, node);
+        return parentLinksConsistent(node->left, node) && parentLinksConsistent(node->right, node);
     }
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_RED_BLACK_TREE_HPP
+#endif   // DAEDALUS_TREES_RED_BLACK_TREE_HPP

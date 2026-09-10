@@ -32,7 +32,7 @@ AuthConfig fastConfig() {
 
 const std::string kGoodPassword = "Labyrinth2026x";
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  SHA-256 -- FIPS 180-4 vectors
@@ -43,16 +43,16 @@ DAEDALUS_TEST(Crypto, sha256_official_vectors) {
              std::string("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
     CHECK_EQ(crypto::toHex(crypto::sha256(std::string("abc"))),
              std::string("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"));
-    CHECK_EQ(crypto::toHex(crypto::sha256(std::string(
-                 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"))),
+    CHECK_EQ(crypto::toHex(crypto::sha256(
+                 std::string("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"))),
              std::string("248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"));
 }
 
 DAEDALUS_TEST(Crypto, sha256_handles_block_boundaries) {
     // 55, 56 and 64 bytes exercise the padding cases: just fits, forces an
     // extra block, and exactly one block.
-    for (std::size_t length : {std::size_t{55}, std::size_t{56}, std::size_t{63},
-                               std::size_t{64}, std::size_t{65}, std::size_t{1000}}) {
+    for (std::size_t length : {std::size_t{55}, std::size_t{56}, std::size_t{63}, std::size_t{64},
+                               std::size_t{65}, std::size_t{1000}}) {
         const std::string message(length, 'a');
         const crypto::Digest digest = crypto::sha256(message);
 
@@ -195,8 +195,8 @@ DAEDALUS_TEST(Auth, password_policy) {
 DAEDALUS_TEST(Auth, registration_and_login_round_trip) {
     AuthService service(fastConfig());
 
-    const auto registered = service.registerUser("ayush", "ayush@example.com", kGoodPassword,
-                                                 Role::Admin);
+    const auto registered =
+        service.registerUser("ayush", "ayush@example.com", kGoodPassword, Role::Admin);
     CHECK_TRUE(registered.success);
     CHECK_EQ(service.userCount(), 1u);
 
@@ -229,8 +229,7 @@ DAEDALUS_TEST(Auth, the_same_password_hashes_differently_for_two_users) {
 
     // Different random salts, so identical passwords must not collide -- this
     // is what makes a stolen table non-precomputable.
-    CHECK_NE(service.findUser("one")->passwordHashHex,
-             service.findUser("two")->passwordHashHex);
+    CHECK_NE(service.findUser("one")->passwordHashHex, service.findUser("two")->passwordHashHex);
     CHECK_NE(service.findUser("one")->saltHex, service.findUser("two")->saltHex);
 }
 
@@ -411,8 +410,8 @@ DAEDALUS_TEST(Auth, rate_limiter_allows_a_burst_then_throttles) {
     const auto now = Clock::now();
 
     for (int i = 0; i < 5; ++i) CHECK_TRUE(limiter.allow("10.0.0.1", now));
-    CHECK_FALSE(limiter.allow("10.0.0.1", now));           // burst exhausted
-    CHECK_TRUE(limiter.allow("10.0.0.2", now));            // a different client is unaffected
+    CHECK_FALSE(limiter.allow("10.0.0.1", now));   // burst exhausted
+    CHECK_TRUE(limiter.allow("10.0.0.2", now));    // a different client is unaffected
 
     // Two seconds later, two tokens have been refilled.
     const auto later = now + std::chrono::seconds{2};
@@ -427,8 +426,8 @@ DAEDALUS_TEST(Auth, rate_limiter_allows_a_burst_then_throttles) {
 DAEDALUS_TEST(Auth, login_is_rate_limited_per_client) {
     AuthConfig config = fastConfig();
     config.rateLimitBurst = 3.0;
-    config.rateLimitPerSecond = 0.001;   // effectively no refill during the test
-    config.maximumFailedAttempts = 100;  // isolate from the lockout path
+    config.rateLimitPerSecond = 0.001;    // effectively no refill during the test
+    config.maximumFailedAttempts = 100;   // isolate from the lockout path
     AuthService service(config);
     (void)service.registerUser("ayush", "a@b.com", kGoodPassword, Role::Viewer, "setup");
 

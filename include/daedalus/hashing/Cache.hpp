@@ -155,7 +155,7 @@ private:
     }
 
     std::size_t capacity_;
-    List recency_;  ///< most recently used at the front
+    List recency_;   ///< most recently used at the front
     std::unordered_map<K, Position> index_;
 };
 
@@ -298,6 +298,6 @@ private:
     std::unordered_map<std::size_t, KeyList> buckets_;
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_HASHING_CACHE_HPP
+#endif   // DAEDALUS_HASHING_CACHE_HPP

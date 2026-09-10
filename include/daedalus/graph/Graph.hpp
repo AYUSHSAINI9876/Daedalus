@@ -250,7 +250,8 @@ public:
         for (std::size_t v = 0; v < n; ++v) {
             matrix[v][v] = W{0};
             for (const edge_type& edge : adjacency_[v]) {
-                if (edge.weight < matrix[edge.from][edge.to]) matrix[edge.from][edge.to] = edge.weight;
+                if (edge.weight < matrix[edge.from][edge.to])
+                    matrix[edge.from][edge.to] = edge.weight;
             }
         }
         return matrix;
@@ -300,6 +301,6 @@ private:
 /// Convenience alias for the common case.
 using DiGraph = Graph<std::string, double>;
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_GRAPH_GRAPH_HPP
+#endif   // DAEDALUS_GRAPH_GRAPH_HPP

@@ -41,9 +41,7 @@ class DoublyLinkedList final : public Sequence<T> {
     };
 
     static T& valueOf(NodeBase* node) { return static_cast<Node*>(node)->value; }
-    static const T& valueOf(const NodeBase* node) {
-        return static_cast<const Node*>(node)->value;
-    }
+    static const T& valueOf(const NodeBase* node) { return static_cast<const Node*>(node)->value; }
 
 public:
     using value_type = T;
@@ -132,10 +130,10 @@ public:
     ~DoublyLinkedList() override { clear(); }
 
     void swap(DoublyLinkedList& other) noexcept {
-        DoublyLinkedList temporary;      // empty
-        temporary.adopt(other);          // other     -> temporary
-        other.adopt(*this);              // this      -> other
-        adopt(temporary);                // temporary -> this
+        DoublyLinkedList temporary;   // empty
+        temporary.adopt(other);       // other     -> temporary
+        other.adopt(*this);           // this      -> other
+        adopt(temporary);             // temporary -> this
     }
 
     // --- observers -----------------------------------------------------------
@@ -247,7 +245,7 @@ public:
         NodeBase* node = &sentinel_;
         do {
             std::swap(node->previous, node->next);
-            node = node->previous;  // previous now holds the old next
+            node = node->previous;   // previous now holds the old next
         } while (node != &sentinel_);
     }
 
@@ -314,6 +312,6 @@ private:
     size_type size_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_LINEAR_DOUBLY_LINKED_LIST_HPP
+#endif   // DAEDALUS_LINEAR_DOUBLY_LINKED_LIST_HPP

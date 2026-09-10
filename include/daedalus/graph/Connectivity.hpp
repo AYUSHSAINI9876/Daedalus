@@ -37,7 +37,7 @@ void canonicalise(std::vector<std::vector<V>>& groups) {
     std::sort(groups.begin(), groups.end());
 }
 
-}  // namespace detail
+}   // namespace detail
 
 /// Tarjan's algorithm: a single DFS maintaining a stack of vertices whose
 /// component is not yet closed. A vertex whose low-link equals its own index is
@@ -232,8 +232,8 @@ template <typename V, typename W>
                     visit(edge.to, current);
                     lowLink[current] = std::min(lowLink[current], lowLink[edge.to]);
                     if (lowLink[edge.to] > discovery[current]) {
-                        bridges.push_back(LabelledEdge<V, W>{
-                            graph.label(current), graph.label(edge.to), edge.weight});
+                        bridges.push_back(LabelledEdge<V, W>{graph.label(current),
+                                                             graph.label(edge.to), edge.weight});
                     }
                 } else {
                     lowLink[current] = std::min(lowLink[current], discovery[edge.to]);
@@ -311,6 +311,6 @@ template <typename V, typename W>
     return points;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_GRAPH_CONNECTIVITY_HPP
+#endif   // DAEDALUS_GRAPH_CONNECTIVITY_HPP

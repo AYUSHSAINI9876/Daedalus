@@ -74,8 +74,9 @@ struct FractionalKnapsackResult {
 /// value/weight is optimal here and NOT optimal for 0/1 knapsack -- the
 /// difference is entirely that a fraction of the best-density item can fill
 /// whatever space is left over.
-[[nodiscard]] inline FractionalKnapsackResult fractionalKnapsack(
-    const std::vector<double>& weights, const std::vector<double>& values, double capacity) {
+[[nodiscard]] inline FractionalKnapsackResult fractionalKnapsack(const std::vector<double>& weights,
+                                                                 const std::vector<double>& values,
+                                                                 double capacity) {
     require(weights.size() == values.size(), "knapsack needs one value per weight");
     require(capacity >= 0.0, "knapsack capacity must be non-negative");
 
@@ -110,9 +111,9 @@ struct HuffmanResult {
     std::size_t encodedBits{0};
     std::size_t fixedWidthBits{0};   ///< what a naive fixed-width code would cost
     [[nodiscard]] double compressionRatio() const {
-        return fixedWidthBits == 0 ? 1.0
-                                   : static_cast<double>(encodedBits) /
-                                         static_cast<double>(fixedWidthBits);
+        return fixedWidthBits == 0
+                   ? 1.0
+                   : static_cast<double>(encodedBits) / static_cast<double>(fixedWidthBits);
     }
 };
 
@@ -316,6 +317,6 @@ struct JobScheduleResult {
     return used;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_GREEDY_HPP
+#endif   // DAEDALUS_ALGORITHMS_GREEDY_HPP

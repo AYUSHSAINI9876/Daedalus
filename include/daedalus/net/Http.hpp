@@ -38,9 +38,8 @@ namespace daedalus::net {
 struct CaseInsensitiveLess {
     bool operator()(const std::string& a, const std::string& b) const {
         return std::lexicographical_compare(
-            a.begin(), a.end(), b.begin(), b.end(), [](unsigned char x, unsigned char y) {
-                return std::tolower(x) < std::tolower(y);
-            });
+            a.begin(), a.end(), b.begin(), b.end(),
+            [](unsigned char x, unsigned char y) { return std::tolower(x) < std::tolower(y); });
     }
 };
 
@@ -95,8 +94,7 @@ using Headers = std::map<std::string, std::string, CaseInsensitiveLess>;
 }
 
 /// Splits "a=1&b=two%20words" into a map, percent-decoding both sides.
-[[nodiscard]] inline std::map<std::string, std::string> parseQueryString(
-    const std::string& query) {
+[[nodiscard]] inline std::map<std::string, std::string> parseQueryString(const std::string& query) {
     std::map<std::string, std::string> parameters;
     std::size_t start = 0;
     while (start < query.size()) {
@@ -467,7 +465,7 @@ public:
             case 500: return "Internal Server Error";
             case 501: return "Not Implemented";
             case 503: return "Service Unavailable";
-            default:  return "Unknown";
+            default: return "Unknown";
         }
     }
 
@@ -494,6 +492,6 @@ private:
     std::vector<std::string> cookies_;
 };
 
-}  // namespace daedalus::net
+}   // namespace daedalus::net
 
-#endif  // DAEDALUS_NET_HTTP_HPP
+#endif   // DAEDALUS_NET_HTTP_HPP

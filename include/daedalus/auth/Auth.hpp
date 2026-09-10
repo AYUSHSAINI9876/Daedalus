@@ -56,9 +56,9 @@ enum class Role { Viewer = 0, Operator = 1, Admin = 2 };
 
 [[nodiscard]] inline std::string toString(Role role) {
     switch (role) {
-        case Role::Viewer:   return "viewer";
+        case Role::Viewer: return "viewer";
         case Role::Operator: return "operator";
-        case Role::Admin:    return "admin";
+        case Role::Admin: return "admin";
     }
     return "unknown";
 }
@@ -144,8 +144,7 @@ struct PasswordPolicy {
     [[nodiscard]] std::string validate(const std::string& password,
                                        const std::string& username) const {
         if (password.size() < minimumLength) {
-            return "password must be at least " + std::to_string(minimumLength) +
-                   " characters";
+            return "password must be at least " + std::to_string(minimumLength) + " characters";
         }
         bool hasUpper = false;
         bool hasLower = false;
@@ -191,8 +190,7 @@ public:
     [[nodiscard]] bool allow(const std::string& client, TimePoint now) {
         Bucket bucket = buckets_.get(client).value_or(Bucket{capacity_, now});
 
-        const double elapsed =
-            std::chrono::duration<double>(now - bucket.lastRefill).count();
+        const double elapsed = std::chrono::duration<double>(now - bucket.lastRefill).count();
         bucket.tokens = std::min(capacity_, bucket.tokens + elapsed * refillPerSecond_);
         bucket.lastRefill = now;
 
@@ -459,8 +457,7 @@ private:
         (void)audit_.push(entry);
     }
 
-    [[nodiscard]] AuthOutcome recordAndFail(const std::string& action,
-                                            const std::string& username,
+    [[nodiscard]] AuthOutcome recordAndFail(const std::string& action, const std::string& username,
                                             const std::string& clientAddress,
                                             const std::string& reason) {
         record(action, username, clientAddress, false, reason);
@@ -474,6 +471,6 @@ private:
     CircularBuffer<AuditEntry> audit_;
 };
 
-}  // namespace daedalus::auth
+}   // namespace daedalus::auth
 
-#endif  // DAEDALUS_AUTH_AUTH_HPP
+#endif   // DAEDALUS_AUTH_AUTH_HPP

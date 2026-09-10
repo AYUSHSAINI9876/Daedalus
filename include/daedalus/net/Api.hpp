@@ -90,9 +90,7 @@ public:
     }
 
     [[nodiscard]] const std::string& root() const noexcept { return root_; }
-    [[nodiscard]] const CacheStatistics& statistics() const noexcept {
-        return cache_.statistics();
-    }
+    [[nodiscard]] const CacheStatistics& statistics() const noexcept { return cache_.statistics(); }
 
 private:
     std::string root_;
@@ -104,7 +102,7 @@ private:
 struct ApiOptions {
     std::string documentRoot{"web"};
     std::string sessionCookieName{"daedalus_session"};
-    bool secureCookies{false};      ///< set when served over HTTPS
+    bool secureCookies{false};         ///< set when served over HTTPS
     std::size_t maximumValues{2000};   ///< cap on array sizes accepted from clients
 };
 
@@ -216,14 +214,14 @@ namespace detail {
         if (from.empty() || to.empty()) throw InvalidArgument("every edge needs from and to");
         graph.addEdge(from, to, edge["weight"].asNumber(1.0));
     }
-    for (const Json& vertex : body["vertices"].isArray() ? body["vertices"].asArray()
-                                                         : JsonArray{}) {
+    for (const Json& vertex :
+         body["vertices"].isArray() ? body["vertices"].asArray() : JsonArray{}) {
         if (vertex.isString()) (void)graph.addVertex(vertex.asString());
     }
     return graph;
 }
 
-}  // namespace detail
+}   // namespace detail
 
 // ---------------------------------------------------------------------------
 
@@ -238,14 +236,14 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
     // One place decides what is public. A new /api/ route is protected by
     // default, which is the only safe direction for that mistake to fail in.
     router.use([&service, &options](const HttpRequest& request, const Next& next) {
-        static const std::vector<std::string> publicPaths{
-            "/api/health", "/api/routes", "/api/auth/login", "/api/auth/register"};
+        static const std::vector<std::string> publicPaths{"/api/health", "/api/routes",
+                                                          "/api/auth/login", "/api/auth/register"};
 
         const bool isApi = request.path.rfind("/api/", 0) == 0;
         if (!isApi) return next(request);
 
-        const bool isPublic = std::find(publicPaths.begin(), publicPaths.end(), request.path) !=
-                              publicPaths.end();
+        const bool isPublic =
+            std::find(publicPaths.begin(), publicPaths.end(), request.path) != publicPaths.end();
         if (isPublic) return next(request);
 
         const std::string token = request.cookie(options.sessionCookieName);
@@ -311,15 +309,14 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
 
     router.post("/api/auth/login", [&service, &options](const HttpRequest& request) {
         const Json body = request.json();
-        const auto outcome = service.login(body["username"].asString(),
-                                           body["password"].asString(), request.clientAddress);
+        const auto outcome = service.login(body["username"].asString(), body["password"].asString(),
+                                           request.clientAddress);
         if (!outcome.success) {
             Json payload;
             payload.set("ok", false).set("message", outcome.message);
             // 429 when throttled, 401 otherwise -- the client shows a different
             // message for "slow down" than for "wrong password".
-            const int status =
-                outcome.message.find("too many") != std::string::npos ? 429 : 401;
+            const int status = outcome.message.find("too many") != std::string::npos ? 429 : 401;
             return HttpResponse::json(payload, status);
         }
 
@@ -329,8 +326,8 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
             .set("role", auth::toString(outcome.role));
         HttpResponse response = HttpResponse::json(payload);
         response.setCookie(options.sessionCookieName, outcome.token,
-                           static_cast<long long>(service.config().sessionLifetime.count()),
-                           true, options.secureCookies);
+                           static_cast<long long>(service.config().sessionLifetime.count()), true,
+                           options.secureCookies);
         return response;
     });
 
@@ -357,12 +354,12 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
     router.get("/api/algorithms", [](const HttpRequest&) {
         Json payload;
         payload.set("sorting", detail::toJsonArray(availableSortStrategies<int>()));
-        payload.set("trees", detail::toJsonArray(std::vector<std::string>{
-                                 "bst", "avl", "redblack", "splay", "treap"}));
-        payload.set("graph", detail::toJsonArray(std::vector<std::string>{
-                                 "bfs", "dfs", "dijkstra", "bellman-ford", "mst-kruskal",
-                                 "mst-prim", "topological", "scc", "components", "bridges",
-                                 "articulation"}));
+        payload.set("trees", detail::toJsonArray(std::vector<std::string>{"bst", "avl", "redblack",
+                                                                          "splay", "treap"}));
+        payload.set("graph",
+                    detail::toJsonArray(std::vector<std::string>{
+                        "bfs", "dfs", "dijkstra", "bellman-ford", "mst-kruskal", "mst-prim",
+                        "topological", "scc", "components", "bridges", "articulation"}));
         payload.set("strings", detail::toJsonArray(std::vector<std::string>{
                                    "kmp", "z", "rabin-karp", "boyer-moore", "palindrome",
                                    "edit-distance", "lcs", "suffix-array"}));
@@ -404,8 +401,7 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
         const Json body = request.json();
         const std::vector<int> values =
             detail::readIntegerArray(body["values"], options.maximumValues);
-        return HttpResponse::json(
-            detail::describeTree(body["kind"].asString("avl"), values));
+        return HttpResponse::json(detail::describeTree(body["kind"].asString("avl"), values));
     });
 
     router.post("/api/strings", [](const HttpRequest& request) {
@@ -472,12 +468,12 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
             payload.set("order", detail::toJsonArray(walk.order));
         } else if (algorithm == "dijkstra" || algorithm == "bellman-ford") {
             requireSource();
-            const auto result = algorithm == "dijkstra" ? dijkstra(graph, source)
-                                                        : bellmanFord(graph, source);
+            const auto result =
+                algorithm == "dijkstra" ? dijkstra(graph, source) : bellmanFord(graph, source);
             Json distances;
             for (std::size_t v = 0; v < graph.vertexCount(); ++v) {
-                distances.set(graph.label(v), result.reachable(v) ? Json(result.distance[v])
-                                                                  : Json());
+                distances.set(graph.label(v),
+                              result.reachable(v) ? Json(result.distance[v]) : Json());
             }
             payload.set("distances", distances);
             payload.set("negativeCycle", result.negativeCycle);
@@ -518,8 +514,7 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
             }
             payload.set("bridges", edges);
         } else if (algorithm == "articulation") {
-            payload.set("articulationPoints",
-                        detail::toJsonArray(findArticulationPoints(graph)));
+            payload.set("articulationPoints", detail::toJsonArray(findArticulationPoints(graph)));
         } else {
             throw InvalidArgument("unknown graph algorithm: " + algorithm);
         }
@@ -563,6 +558,6 @@ inline void buildApi(Router& router, auth::AuthService& service, StaticFiles& fi
     });
 }
 
-}  // namespace daedalus::net
+}   // namespace daedalus::net
 
-#endif  // DAEDALUS_NET_API_HPP
+#endif   // DAEDALUS_NET_API_HPP

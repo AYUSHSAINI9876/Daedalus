@@ -36,8 +36,7 @@ namespace daedalus {
 
 /// Index of the first element equal to `target`, or nullopt.
 template <typename T>
-[[nodiscard]] std::optional<std::size_t> linearSearch(const std::vector<T>& data,
-                                                      const T& target) {
+[[nodiscard]] std::optional<std::size_t> linearSearch(const std::vector<T>& data, const T& target) {
     for (std::size_t i = 0; i < data.size(); ++i) {
         if (data[i] == target) return i;
     }
@@ -48,8 +47,7 @@ template <typename T>
 /// duplicates exist -- use firstOccurrence/lastOccurrence when that matters.
 template <typename T>
     requires LessThanComparable<T>
-[[nodiscard]] std::optional<std::size_t> binarySearch(const std::vector<T>& data,
-                                                      const T& target) {
+[[nodiscard]] std::optional<std::size_t> binarySearch(const std::vector<T>& data, const T& target) {
     std::size_t low = 0;
     std::size_t high = data.size();
     while (low < high) {
@@ -69,8 +67,7 @@ template <typename T>
 template <typename T>
     requires LessThanComparable<T>
 [[nodiscard]] std::optional<std::size_t> binarySearchRecursive(const std::vector<T>& data,
-                                                               const T& target,
-                                                               std::size_t low = 0,
+                                                               const T& target, std::size_t low = 0,
                                                                std::size_t high = 0,
                                                                bool initialised = false) {
     if (!initialised) return binarySearchRecursive(data, target, 0, data.size(), true);
@@ -356,6 +353,6 @@ template <typename T>
     return best;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_SEARCHING_HPP
+#endif   // DAEDALUS_ALGORITHMS_SEARCHING_HPP

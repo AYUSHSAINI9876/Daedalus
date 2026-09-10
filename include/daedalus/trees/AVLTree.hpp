@@ -30,7 +30,7 @@ struct AVLNode {
     T value;
     AVLNode* left{nullptr};
     AVLNode* right{nullptr};
-    int height{1};  ///< in nodes: a leaf is 1, so an empty subtree is 0
+    int height{1};   ///< in nodes: a leaf is 1, so an empty subtree is 0
 
     explicit AVLNode(const T& v) : value(v) {}
 };
@@ -117,12 +117,12 @@ private:
         refreshHeight(node);
         const int balance = balanceOf(node);
         if (balance > 1) {
-            if (balanceOf(node->left) < 0) node->left = rotateLeft(node->left);  // LR
-            return rotateRight(node);                                            // LL
+            if (balanceOf(node->left) < 0) node->left = rotateLeft(node->left);   // LR
+            return rotateRight(node);                                             // LL
         }
         if (balance < -1) {
-            if (balanceOf(node->right) > 0) node->right = rotateRight(node->right);  // RL
-            return rotateLeft(node);                                                 // RR
+            if (balanceOf(node->right) > 0) node->right = rotateRight(node->right);   // RL
+            return rotateLeft(node);                                                  // RR
         }
         return node;
     }
@@ -137,7 +137,7 @@ private:
         } else if (node->value < value) {
             node->right = insertInto(node->right, value, inserted);
         } else {
-            return node;  // duplicate, tree unchanged
+            return node;   // duplicate, tree unchanged
         }
         return rebalanceNode(node);
     }
@@ -177,6 +177,6 @@ private:
     }
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_AVL_TREE_HPP
+#endif   // DAEDALUS_TREES_AVL_TREE_HPP

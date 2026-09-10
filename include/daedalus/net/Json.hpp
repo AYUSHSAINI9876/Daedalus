@@ -151,16 +151,16 @@ public:
         for (char raw : text) {
             const unsigned char c = static_cast<unsigned char>(raw);
             switch (c) {
-                case '"':  os << "\\\""; break;
+                case '"': os << "\\\""; break;
                 case '\\': os << "\\\\"; break;
                 case '\b': os << "\\b"; break;
                 case '\f': os << "\\f"; break;
                 case '\n': os << "\\n"; break;
                 case '\r': os << "\\r"; break;
                 case '\t': os << "\\t"; break;
-                case '<':  os << "\\u003c"; break;
-                case '>':  os << "\\u003e"; break;
-                case '&':  os << "\\u0026"; break;
+                case '<': os << "\\u003c"; break;
+                case '>': os << "\\u003e"; break;
+                case '&': os << "\\u0026"; break;
                 default:
                     if (c < 0x20) {
                         static constexpr char kDigits[] = "0123456789abcdef";
@@ -197,12 +197,8 @@ public:
 private:
     void write(std::ostringstream& os) const {
         switch (kind_) {
-            case Kind::Null:
-                os << "null";
-                return;
-            case Kind::Boolean:
-                os << (boolean_ ? "true" : "false");
-                return;
+            case Kind::Null: os << "null"; return;
+            case Kind::Boolean: os << (boolean_ ? "true" : "false"); return;
             case Kind::Number: {
                 // Render whole numbers without a decimal point so ids and
                 // counts do not come out as "3.000000".
@@ -217,9 +213,7 @@ private:
                 }
                 return;
             }
-            case Kind::String:
-                os << '"' << escape(string_) << '"';
-                return;
+            case Kind::String: os << '"' << escape(string_) << '"'; return;
             case Kind::Array: {
                 os << '[';
                 for (std::size_t i = 0; i < array_.size(); ++i) {
@@ -267,15 +261,9 @@ private:
             case '{': return parseObject(text, position);
             case '[': return parseArray(text, position);
             case '"': return Json(parseString(text, position));
-            case 't':
-                requireLiteral(text, position, "true");
-                return Json(true);
-            case 'f':
-                requireLiteral(text, position, "false");
-                return Json(false);
-            case 'n':
-                requireLiteral(text, position, "null");
-                return Json();
+            case 't': requireLiteral(text, position, "true"); return Json(true);
+            case 'f': requireLiteral(text, position, "false"); return Json(false);
+            case 'n': requireLiteral(text, position, "null"); return Json();
             default: return Json(parseNumber(text, position));
         }
     }
@@ -343,16 +331,16 @@ private:
             if (position >= text.size()) throw InvalidArgument("unterminated JSON escape");
             const char escaped = text[position++];
             switch (escaped) {
-                case '"':  value += '"'; break;
+                case '"': value += '"'; break;
                 case '\\': value += '\\'; break;
-                case '/':  value += '/'; break;
-                case 'b':  value += '\b'; break;
-                case 'f':  value += '\f'; break;
-                case 'n':  value += '\n'; break;
-                case 'r':  value += '\r'; break;
-                case 't':  value += '\t'; break;
-                case 'u':  value += decodeUnicodeEscape(text, position); break;
-                default:   throw InvalidArgument("invalid JSON escape sequence");
+                case '/': value += '/'; break;
+                case 'b': value += '\b'; break;
+                case 'f': value += '\f'; break;
+                case 'n': value += '\n'; break;
+                case 'r': value += '\r'; break;
+                case 't': value += '\t'; break;
+                case 'u': value += decodeUnicodeEscape(text, position); break;
+                default: throw InvalidArgument("invalid JSON escape sequence");
             }
         }
         if (position >= text.size()) throw InvalidArgument("unterminated JSON string");
@@ -417,6 +405,6 @@ private:
     JsonObject object_;
 };
 
-}  // namespace daedalus::net
+}   // namespace daedalus::net
 
-#endif  // DAEDALUS_NET_JSON_HPP
+#endif   // DAEDALUS_NET_JSON_HPP

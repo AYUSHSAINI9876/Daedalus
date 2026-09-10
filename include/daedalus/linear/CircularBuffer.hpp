@@ -34,8 +34,7 @@ public:
     using value_type = T;
     using size_type = std::size_t;
 
-    explicit CircularBuffer(size_type capacity,
-                            OverflowPolicy policy = OverflowPolicy::Overwrite)
+    explicit CircularBuffer(size_type capacity, OverflowPolicy policy = OverflowPolicy::Overwrite)
         : capacity_(capacity), policy_(policy) {
         require(capacity > 0, "CircularBuffer capacity must be greater than zero");
         buffer_ = static_cast<T*>(::operator new(capacity * sizeof(T)));
@@ -178,6 +177,6 @@ private:
     OverflowPolicy policy_{OverflowPolicy::Overwrite};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_LINEAR_CIRCULAR_BUFFER_HPP
+#endif   // DAEDALUS_LINEAR_CIRCULAR_BUFFER_HPP

@@ -32,8 +32,8 @@ namespace daedalus {
 class Trie final : public Collection<std::string> {
     struct Node {
         std::map<char, Node*> children;
-        bool terminal{false};      ///< a stored word ends here
-        std::size_t subtreeWords{0};  ///< words stored at or below this node
+        bool terminal{false};          ///< a stored word ends here
+        std::size_t subtreeWords{0};   ///< words stored at or below this node
 
         ~Node() {
             for (auto& entry : children) delete entry.second;
@@ -213,6 +213,6 @@ private:
     size_type size_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_TRIE_HPP
+#endif   // DAEDALUS_TREES_TRIE_HPP

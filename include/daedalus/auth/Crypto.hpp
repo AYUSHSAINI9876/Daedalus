@@ -369,6 +369,6 @@ private:
     return toHex(randomBytes(bytes));
 }
 
-}  // namespace daedalus::crypto
+}   // namespace daedalus::crypto
 
-#endif  // DAEDALUS_AUTH_CRYPTO_HPP
+#endif   // DAEDALUS_AUTH_CRYPTO_HPP

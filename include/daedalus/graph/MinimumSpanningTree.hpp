@@ -20,8 +20,8 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <utility>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "daedalus/graph/Graph.hpp"
@@ -64,7 +64,7 @@ template <typename V, typename W>
         result.edges.push_back(
             LabelledEdge<V, W>{graph.label(edge.from), graph.label(edge.to), edge.weight});
         result.totalWeight += edge.weight;
-        if (result.edges.size() == n - 1) break;               // tree is complete
+        if (result.edges.size() == n - 1) break;   // tree is complete
     }
 
     result.componentCount = components.componentCount();
@@ -75,7 +75,8 @@ template <typename V, typename W>
 /// Prim's algorithm, started from `source` (or vertex 0 when omitted). Uses
 /// lazy deletion in the heap, the same trick as Dijkstra.
 template <typename V, typename W>
-[[nodiscard]] SpanningTreeResult<V, W> prim(const Graph<V, W>& graph, const std::type_identity_t<V>& source) {
+[[nodiscard]] SpanningTreeResult<V, W> prim(const Graph<V, W>& graph,
+                                            const std::type_identity_t<V>& source) {
     if (graph.directed()) {
         throw GraphError("a minimum spanning tree is only defined for undirected graphs");
     }
@@ -103,7 +104,7 @@ template <typename V, typename W>
         bool operator()(const Candidate& a, const Candidate& b) const {
             if (b.weight < a.weight) return true;   // min-heap
             if (a.weight < b.weight) return false;
-            return b.to < a.to;                     // deterministic tie-break
+            return b.to < a.to;   // deterministic tie-break
         }
     };
 
@@ -146,6 +147,6 @@ template <typename V, typename W>
     return prim(graph, graph.label(0));
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_GRAPH_MINIMUM_SPANNING_TREE_HPP
+#endif   // DAEDALUS_GRAPH_MINIMUM_SPANNING_TREE_HPP

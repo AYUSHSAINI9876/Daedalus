@@ -51,7 +51,7 @@ IntGraph weightedRoadNetwork() {
     return graph;
 }
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  Graph container
@@ -217,7 +217,7 @@ DAEDALUS_TEST(GraphTraversal, cycle_detection_undirected_and_directed) {
     IntGraph dag(true);
     dag.addEdge(0, 1);
     dag.addEdge(1, 2);
-    dag.addEdge(0, 2);     // a diamond is NOT a directed cycle
+    dag.addEdge(0, 2);   // a diamond is NOT a directed cycle
     CHECK_FALSE(hasCycle(dag));
     dag.addEdge(2, 0);
     CHECK_TRUE(hasCycle(dag));
@@ -317,7 +317,7 @@ DAEDALUS_TEST(ShortestPath, bellman_ford_handles_negative_edges) {
     graph.addEdge(0, 1, 4);
     graph.addEdge(0, 2, 5);
     graph.addEdge(1, 3, 3);
-    graph.addEdge(2, 1, -3);      // going the long way round is cheaper
+    graph.addEdge(2, 1, -3);   // going the long way round is cheaper
     graph.addEdge(3, 4, 2);
 
     const auto result = bellmanFord(graph, 0);
@@ -333,7 +333,7 @@ DAEDALUS_TEST(ShortestPath, bellman_ford_detects_a_negative_cycle) {
     graph.addEdge(0, 1, 1);
     graph.addEdge(1, 2, -1);
     graph.addEdge(2, 3, -1);
-    graph.addEdge(3, 1, -1);      // loop with total weight -3
+    graph.addEdge(3, 1, -1);   // loop with total weight -3
     CHECK_TRUE(bellmanFord(graph, 0).negativeCycle);
 }
 
@@ -559,11 +559,11 @@ DAEDALUS_TEST(Connectivity, tarjan_and_kosaraju_find_the_same_components) {
     IntGraph graph(true);
     graph.addEdge(0, 1);
     graph.addEdge(1, 2);
-    graph.addEdge(2, 0);      // {0,1,2}
+    graph.addEdge(2, 0);   // {0,1,2}
     graph.addEdge(2, 3);
     graph.addEdge(3, 4);
-    graph.addEdge(4, 3);      // {3,4}
-    graph.addEdge(4, 5);      // {5}
+    graph.addEdge(4, 3);   // {3,4}
+    graph.addEdge(4, 5);   // {5}
 
     const auto tarjan = tarjanStronglyConnectedComponents(graph);
     const auto kosaraju = kosarajuStronglyConnectedComponents(graph);
@@ -611,7 +611,7 @@ DAEDALUS_TEST(Connectivity, bridges_in_a_barbell) {
     graph.addEdge(0, 1);
     graph.addEdge(1, 2);
     graph.addEdge(2, 0);
-    graph.addEdge(2, 3);      // the bridge
+    graph.addEdge(2, 3);   // the bridge
     graph.addEdge(3, 4);
     graph.addEdge(4, 5);
     graph.addEdge(5, 3);
@@ -703,7 +703,7 @@ DAEDALUS_TEST(NetworkFlow, dinic_agrees_with_edmonds_karp) {
 DAEDALUS_TEST(NetworkFlow, min_cut_separates_source_from_sink) {
     Graph<std::string, int> network(true);
     network.addEdge("s", "a", 3);
-    network.addEdge("a", "t", 2);          // the bottleneck
+    network.addEdge("a", "t", 2);   // the bottleneck
 
     const auto result = minimumCut(network, "s", "t");
     CHECK_EQ(result.maxFlow, 2);

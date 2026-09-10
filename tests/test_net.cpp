@@ -20,6 +20,24 @@ using namespace daedalus::net;
 
 namespace {
 
+/// Winsock's send/recv take an int length where POSIX takes size_t. These two
+/// helpers keep the platform ifdef in one place instead of at every call site.
+int sendBytes(platform::SocketHandle socketHandle, const char* data, std::size_t length) {
+#if defined(_WIN32)
+    return ::send(socketHandle, data, static_cast<int>(length), 0);
+#else
+    return static_cast<int>(::send(socketHandle, data, length, 0));
+#endif
+}
+
+int receiveBytes(platform::SocketHandle socketHandle, char* buffer, std::size_t capacity) {
+#if defined(_WIN32)
+    return ::recv(socketHandle, buffer, static_cast<int>(capacity), 0);
+#else
+    return static_cast<int>(::recv(socketHandle, buffer, capacity, 0));
+#endif
+}
+
 /// Minimal blocking HTTP client, used only by the end-to-end tests. Sends one
 /// request and reads until the connection closes or the body is complete.
 std::string sendRawRequest(std::uint16_t port, const std::string& raw) {
@@ -39,7 +57,7 @@ std::string sendRawRequest(std::uint16_t port, const std::string& raw) {
 
     std::size_t sent = 0;
     while (sent < raw.size()) {
-        const auto written = ::send(client, raw.data() + sent, raw.size() - sent, 0);
+        const int written = sendBytes(client, raw.data() + sent, raw.size() - sent);
         if (written <= 0) break;
         sent += static_cast<std::size_t>(written);
     }
@@ -47,7 +65,7 @@ std::string sendRawRequest(std::uint16_t port, const std::string& raw) {
     std::string response;
     char buffer[4096];
     for (;;) {
-        const auto received = ::recv(client, buffer, sizeof(buffer), 0);
+        const int received = receiveBytes(client, buffer, sizeof(buffer));
         if (received <= 0) break;
         response.append(buffer, static_cast<std::size_t>(received));
 
@@ -65,8 +83,8 @@ std::string sendRawRequest(std::uint16_t port, const std::string& raw) {
 }
 
 std::string get(std::uint16_t port, const std::string& path) {
-    return sendRawRequest(port, "GET " + path +
-                                    " HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n");
+    return sendRawRequest(
+        port, "GET " + path + " HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n");
 }
 
 int statusOf(const std::string& response) {
@@ -79,7 +97,7 @@ std::string bodyOf(const std::string& response) {
     return headerEnd == std::string::npos ? "" : response.substr(headerEnd + 4);
 }
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  JSON
@@ -233,8 +251,7 @@ DAEDALUS_TEST(Http, parses_a_complete_request) {
 }
 
 DAEDALUS_TEST(Http, header_lookup_is_case_insensitive) {
-    const std::string raw =
-        "GET / HTTP/1.1\r\nHost: x\r\nX-Custom-Header: value\r\n\r\n";
+    const std::string raw = "GET / HTTP/1.1\r\nHost: x\r\nX-Custom-Header: value\r\n\r\n";
     const HttpRequest request = parseRequest(raw);
     CHECK_EQ(request.header("x-custom-header"), std::string("value"));
     CHECK_EQ(request.header("X-CUSTOM-HEADER"), std::string("value"));
@@ -242,17 +259,16 @@ DAEDALUS_TEST(Http, header_lookup_is_case_insensitive) {
 }
 
 DAEDALUS_TEST(Http, rejects_malformed_and_oversized_requests) {
-    CHECK_THROWS_AS(parseRequest("GET / HTTP/1.1\r\n"), InvalidArgument);      // no blank line
-    CHECK_THROWS_AS(parseRequest("GARBAGE\r\n\r\n"), InvalidArgument);         // no target
-    CHECK_THROWS_AS(parseRequest("GET / HTTP/9.9\r\n\r\n"), InvalidArgument);  // bad version
+    CHECK_THROWS_AS(parseRequest("GET / HTTP/1.1\r\n"), InvalidArgument);       // no blank line
+    CHECK_THROWS_AS(parseRequest("GARBAGE\r\n\r\n"), InvalidArgument);          // no target
+    CHECK_THROWS_AS(parseRequest("GET / HTTP/9.9\r\n\r\n"), InvalidArgument);   // bad version
     CHECK_THROWS_AS(parseRequest("GET / HTTP/1.1\r\nbadheader\r\n\r\n"), InvalidArgument);
-    CHECK_THROWS_AS(
-        parseRequest("GET / HTTP/1.1\r\nContent-Length: abc\r\n\r\n"), InvalidArgument);
+    CHECK_THROWS_AS(parseRequest("GET / HTTP/1.1\r\nContent-Length: abc\r\n\r\n"), InvalidArgument);
 
     HttpLimits tight;
     tight.maximumBody = 4;
-    CHECK_THROWS_AS(
-        parseRequest("POST / HTTP/1.1\r\nContent-Length: 100\r\n\r\n", tight), InvalidArgument);
+    CHECK_THROWS_AS(parseRequest("POST / HTTP/1.1\r\nContent-Length: 100\r\n\r\n", tight),
+                    InvalidArgument);
 
     // Content-Length larger than the bytes actually present.
     CHECK_THROWS_AS(parseRequest("POST / HTTP/1.1\r\nContent-Length: 50\r\n\r\nshort"),
@@ -269,8 +285,7 @@ DAEDALUS_TEST(Http, keep_alive_defaults_follow_the_protocol_version) {
     const auto oneZero = parseRequest("GET / HTTP/1.0\r\nHost: x\r\n\r\n");
     CHECK_FALSE(oneZero.wantsKeepAlive());   // 1.0 closes unless asked otherwise
 
-    const auto oneZeroKeep =
-        parseRequest("GET / HTTP/1.0\r\nConnection: keep-alive\r\n\r\n");
+    const auto oneZeroKeep = parseRequest("GET / HTTP/1.0\r\nConnection: keep-alive\r\n\r\n");
     CHECK_TRUE(oneZeroKeep.wantsKeepAlive());
 }
 
@@ -409,9 +424,8 @@ DAEDALUS_TEST(Router, middleware_runs_outermost_first_and_can_short_circuit) {
     // A middleware that does not call next() stops the chain.
     Router guarded;
     bool handlerRan = false;
-    guarded.use([](const HttpRequest&, const Next&) {
-        return HttpResponse::error(401, "unauthorised");
-    });
+    guarded.use(
+        [](const HttpRequest&, const Next&) { return HttpResponse::error(401, "unauthorised"); });
     guarded.get("/x", [&handlerRan](const HttpRequest&) {
         handlerRan = true;
         return HttpResponse::text("secret");
@@ -430,9 +444,9 @@ DAEDALUS_TEST(Router, lists_its_routes_and_validates_patterns) {
     CHECK_EQ(routes[0], std::string("GET /a"));
     CHECK_EQ(routes[1], std::string("POST /b/:id"));
 
-    CHECK_THROWS_AS(router.get("no-leading-slash", [](const HttpRequest&) {
-        return HttpResponse::text("");
-    }), InvalidArgument);
+    CHECK_THROWS_AS(
+        router.get("no-leading-slash", [](const HttpRequest&) { return HttpResponse::text(""); }),
+        InvalidArgument);
 }
 
 // ============================================================================
@@ -471,7 +485,7 @@ DAEDALUS_TEST(ThreadPool, bounded_queue_refuses_when_full) {
     CHECK_TRUE(queue.tryPush(1));
     CHECK_TRUE(queue.tryPush(2));
     CHECK_TRUE(queue.tryPush(3));
-    CHECK_FALSE(queue.tryPush(4));      // full: backpressure rather than growth
+    CHECK_FALSE(queue.tryPush(4));   // full: backpressure rather than growth
     CHECK_EQ(queue.size(), 3u);
 
     CHECK_EQ(queue.pop().value(), 1);
@@ -518,7 +532,7 @@ DAEDALUS_TEST(Server, serves_real_requests_over_a_socket) {
     });
 
     ServerConfig config;
-    config.port = 0;              // let the OS pick a free port
+    config.port = 0;   // let the OS pick a free port
     config.workerThreads = 2;
     config.logRequests = false;
 
@@ -600,8 +614,7 @@ DAEDALUS_TEST(Server, a_malformed_request_gets_400_not_a_crash) {
         port, "GET /../../etc/passwd HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n");
     CHECK_EQ(statusOf(traversal), 400);
 
-    const std::string garbage =
-        sendRawRequest(port, "NOT-A-REQUEST\r\nHost: x\r\n\r\n");
+    const std::string garbage = sendRawRequest(port, "NOT-A-REQUEST\r\nHost: x\r\n\r\n");
     CHECK_EQ(statusOf(garbage), 400);
 
     // The server is still healthy afterwards.
@@ -632,9 +645,9 @@ DAEDALUS_TEST(Server, keep_alive_serves_several_requests_on_one_connection) {
     const std::string request = "GET /n HTTP/1.1\r\nHost: x\r\n\r\n";
     int answered = 0;
     for (int i = 0; i < 3; ++i) {
-        (void)::send(client, request.data(), request.size(), 0);
+        (void)sendBytes(client, request.data(), request.size());
         char buffer[2048];
-        const auto received = ::recv(client, buffer, sizeof(buffer), 0);
+        const int received = receiveBytes(client, buffer, sizeof(buffer));
         if (received > 0) {
             const std::string response(buffer, static_cast<std::size_t>(received));
             if (response.find("HTTP/1.1 200") != std::string::npos) ++answered;

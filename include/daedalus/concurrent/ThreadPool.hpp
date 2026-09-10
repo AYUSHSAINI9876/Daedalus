@@ -165,6 +165,6 @@ private:
     std::atomic<std::size_t> completed_{0};
 };
 
-}  // namespace daedalus::concurrent
+}   // namespace daedalus::concurrent
 
-#endif  // DAEDALUS_CONCURRENT_THREAD_POOL_HPP
+#endif   // DAEDALUS_CONCURRENT_THREAD_POOL_HPP

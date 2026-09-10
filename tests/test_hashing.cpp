@@ -36,7 +36,7 @@ std::vector<int> sortedCopy(std::vector<int> values) {
     return values;
 }
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  HashMap (separate chaining)
@@ -52,7 +52,7 @@ DAEDALUS_TEST(HashMap, put_get_and_overwrite) {
     CHECK_FALSE(map.get("three").has_value());
 
     map.put("one", 100);
-    CHECK_EQ(map.size(), 2u);           // an overwrite must not grow the map
+    CHECK_EQ(map.size(), 2u);   // an overwrite must not grow the map
     CHECK_EQ(map.get("one").value(), 100);
 }
 
@@ -233,8 +233,7 @@ DAEDALUS_TEST(HashSet, set_algebra) {
     CHECK_EQ(sortedCopy(a.unionWith(b).toVector()), (std::vector<int>{1, 2, 3, 4, 5, 6}));
     CHECK_EQ(sortedCopy(a.intersectionWith(b).toVector()), (std::vector<int>{3, 4}));
     CHECK_EQ(sortedCopy(a.differenceWith(b).toVector()), (std::vector<int>{1, 2}));
-    CHECK_EQ(sortedCopy(a.symmetricDifferenceWith(b).toVector()),
-             (std::vector<int>{1, 2, 5, 6}));
+    CHECK_EQ(sortedCopy(a.symmetricDifferenceWith(b).toVector()), (std::vector<int>{1, 2, 5, 6}));
 }
 
 DAEDALUS_TEST(HashSet, subset_and_disjoint) {
@@ -339,8 +338,8 @@ DAEDALUS_TEST(LRUCache, updating_a_key_refreshes_recency) {
     LRUCache<int, int> cache(2);
     cache.put(1, 1);
     cache.put(2, 2);
-    cache.put(1, 100);      // 1 is now the most recent
-    cache.put(3, 3);        // evicts 2
+    cache.put(1, 100);   // 1 is now the most recent
+    cache.put(3, 3);     // evicts 2
     CHECK_FALSE(cache.contains(2));
     CHECK_EQ(cache.keysByEvictionOrder(), (std::vector<int>{3, 1}));
     CHECK_EQ(cache.get(1).value(), 100);
@@ -379,7 +378,7 @@ DAEDALUS_TEST(LFUCache, evicts_the_least_frequently_used) {
     (void)cache.get(1);
     (void)cache.get(1);
     (void)cache.get(2);
-    cache.put(4, "four");     // 3 has frequency 1, the lowest, so it goes
+    cache.put(4, "four");   // 3 has frequency 1, the lowest, so it goes
 
     CHECK_FALSE(cache.contains(3));
     CHECK_TRUE(cache.contains(1));
@@ -392,8 +391,8 @@ DAEDALUS_TEST(LFUCache, evicts_the_least_frequently_used) {
 DAEDALUS_TEST(LFUCache, ties_are_broken_by_recency) {
     LFUCache<int, int> cache(2);
     cache.put(1, 1);
-    cache.put(2, 2);          // both have frequency 1; 1 is the older
-    cache.put(3, 3);          // so 1 is evicted
+    cache.put(2, 2);   // both have frequency 1; 1 is the older
+    cache.put(3, 3);   // so 1 is evicted
     CHECK_FALSE(cache.contains(1));
     CHECK_TRUE(cache.contains(2));
     CHECK_TRUE(cache.contains(3));
@@ -483,7 +482,7 @@ DAEDALUS_TEST(DisjointSet, union_merges_and_reports_novelty) {
     CHECK_TRUE(sets.unite(0, 1));
     CHECK_TRUE(sets.unite(2, 3));
     CHECK_TRUE(sets.unite(1, 2));
-    CHECK_FALSE(sets.unite(0, 3));       // already connected: the cycle test
+    CHECK_FALSE(sets.unite(0, 3));   // already connected: the cycle test
     CHECK_EQ(sets.componentCount(), 3u);
     CHECK_TRUE(sets.connected(0, 3));
     CHECK_FALSE(sets.connected(0, 4));

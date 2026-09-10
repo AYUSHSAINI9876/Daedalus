@@ -34,9 +34,9 @@ namespace daedalus {
 
 /// Table sizes: each roughly doubles the previous one and is prime.
 inline constexpr std::size_t kHashTableSizes[] = {
-    11u,      23u,       47u,       97u,       197u,     397u,     797u,
-    1597u,    3203u,     6421u,     12853u,    25717u,   51437u,   102877u,
-    205759u,  411527u,   823117u,   1646237u,  3292489u, 6584983u, 13169977u};
+    11u,     23u,     47u,     97u,      197u,     397u,     797u,
+    1597u,   3203u,   6421u,   12853u,   25717u,   51437u,   102877u,
+    205759u, 411527u, 823117u, 1646237u, 3292489u, 6584983u, 13169977u};
 
 [[nodiscard]] inline std::size_t nextHashTableSize(std::size_t atLeast) {
     for (std::size_t candidate : kHashTableSizes) {
@@ -69,9 +69,9 @@ public:
 
     explicit HashMap(size_type expectedElements, Hash hash = Hash())
         : hash_(std::move(hash)),
-          buckets_(nextHashTableSize(
-              static_cast<size_type>(static_cast<double>(expectedElements) /
-                                     kDefaultMaxLoadFactor) + 1)) {}
+          buckets_(nextHashTableSize(static_cast<size_type>(static_cast<double>(expectedElements) /
+                                                            kDefaultMaxLoadFactor) +
+                                     1)) {}
 
     HashMap(std::initializer_list<value_type> entries) : HashMap() {
         for (const auto& entry : entries) put(entry.first, entry.second);
@@ -224,17 +224,14 @@ public:
             if (length > stats.longestChain) stats.longestChain = length;
         }
         stats.loadFactor = loadFactor();
-        stats.averageChain =
-            stats.usedBuckets == 0
-                ? 0.0
-                : static_cast<double>(size_) / static_cast<double>(stats.usedBuckets);
+        stats.averageChain = stats.usedBuckets == 0 ? 0.0
+                                                    : static_cast<double>(size_) /
+                                                          static_cast<double>(stats.usedBuckets);
         return stats;
     }
 
 private:
-    [[nodiscard]] size_type bucketFor(const K& key) const {
-        return hash_(key) % buckets_.size();
-    }
+    [[nodiscard]] size_type bucketFor(const K& key) const { return hash_(key) % buckets_.size(); }
 
     void rehashIfNeeded() {
         if (loadFactor() < maxLoadFactor_) return;
@@ -258,6 +255,6 @@ private:
     double maxLoadFactor_{kDefaultMaxLoadFactor};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_HASHING_HASH_MAP_HPP
+#endif   // DAEDALUS_HASHING_HASH_MAP_HPP

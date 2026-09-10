@@ -89,7 +89,9 @@ public:
 
     [[nodiscard]] size_type size() const noexcept { return count_; }
     [[nodiscard]] bool empty() const noexcept { return count_ == 0; }
-    [[nodiscard]] std::string name() const { return std::string("SegmentTree<") + Policy::name + ">"; }
+    [[nodiscard]] std::string name() const {
+        return std::string("SegmentTree<") + Policy::name + ">";
+    }
 
     /// Sets position `index` to `value`.
     void update(size_type index, const T& value) {
@@ -137,8 +139,8 @@ private:
 
     [[nodiscard]] T query(size_type node, size_type low, size_type high, size_type left,
                           size_type right) const {
-        if (right < low || high < left) return Policy::identity();     // disjoint
-        if (left <= low && high <= right) return tree_[node];          // fully covered
+        if (right < low || high < left) return Policy::identity();   // disjoint
+        if (left <= low && high <= right) return tree_[node];        // fully covered
         const size_type middle = low + (high - low) / 2;
         return Policy::combine(query(2 * node, low, middle, left, right),
                                query(2 * node + 1, middle + 1, high, left, right));
@@ -250,6 +252,6 @@ private:
     size_type count_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_SEGMENT_TREE_HPP
+#endif   // DAEDALUS_TREES_SEGMENT_TREE_HPP

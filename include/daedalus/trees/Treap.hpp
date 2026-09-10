@@ -56,8 +56,7 @@ public:
 
     void insert(const T& value) override {
         bool inserted = false;
-        this->root_ =
-            insertInto(this->root_, value, static_cast<std::uint32_t>(rng_()), inserted);
+        this->root_ = insertInto(this->root_, value, static_cast<std::uint32_t>(rng_()), inserted);
         if (inserted) ++this->size_;
     }
 
@@ -100,7 +99,7 @@ private:
             node->right = insertInto(node->right, value, priority, inserted);
             if (node->right->priority > node->priority) node = rotateLeft(node);
         }
-        return node;  // duplicate keys leave the tree untouched
+        return node;   // duplicate keys leave the tree untouched
     }
 
     static Node* eraseFrom(Node* node, const T& value, bool& removed) {
@@ -146,6 +145,6 @@ private:
     std::mt19937 rng_;
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_TREAP_HPP
+#endif   // DAEDALUS_TREES_TREAP_HPP

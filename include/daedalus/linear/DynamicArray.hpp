@@ -55,8 +55,7 @@ public:
         for (const T& value : values) pushBack(value);
     }
 
-    template <typename InputIt,
-              typename = std::enable_if_t<!std::is_integral_v<InputIt>>>
+    template <typename InputIt, typename = std::enable_if_t<!std::is_integral_v<InputIt>>>
     DynamicArray(InputIt first, InputIt last) {
         for (; first != last; ++first) pushBack(*first);
     }
@@ -331,6 +330,6 @@ void swap(DynamicArray<T>& lhs, DynamicArray<T>& rhs) noexcept {
     lhs.swap(rhs);
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_LINEAR_DYNAMIC_ARRAY_HPP
+#endif   // DAEDALUS_LINEAR_DYNAMIC_ARRAY_HPP

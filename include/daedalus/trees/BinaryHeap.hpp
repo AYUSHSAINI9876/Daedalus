@@ -181,7 +181,7 @@ public:
     struct Entry {
         Priority priority;
         T value;
-        std::size_t sequence;  ///< insertion order, to make ties deterministic
+        std::size_t sequence;   ///< insertion order, to make ties deterministic
 
         /// Identity is the sequence number: BinaryHeap's Collection interface
         /// needs equality, and two entries are the same entry only if they are
@@ -193,7 +193,7 @@ public:
         bool operator()(const Entry& a, const Entry& b) const {
             if (b.priority < a.priority) return true;   // higher cost = lower rank
             if (a.priority < b.priority) return false;
-            return b.sequence < a.sequence;             // earlier insert wins ties
+            return b.sequence < a.sequence;   // earlier insert wins ties
         }
     };
 
@@ -226,6 +226,6 @@ private:
     std::size_t nextSequence_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_BINARY_HEAP_HPP
+#endif   // DAEDALUS_TREES_BINARY_HEAP_HPP

@@ -23,26 +23,26 @@
 namespace daedalus {
 
 enum class EventType {
-    Comparison,  ///< two elements were compared
-    Swap,        ///< two elements exchanged positions
-    Move,        ///< an element was written to a new slot
-    Access,      ///< an element was read
-    Visit,       ///< a vertex or node was visited
-    Relax,       ///< a shortest-path edge relaxation succeeded
-    Partition,   ///< a divide-and-conquer split happened
-    Custom       ///< algorithm-specific milestone, see `detail`
+    Comparison,   ///< two elements were compared
+    Swap,         ///< two elements exchanged positions
+    Move,         ///< an element was written to a new slot
+    Access,       ///< an element was read
+    Visit,        ///< a vertex or node was visited
+    Relax,        ///< a shortest-path edge relaxation succeeded
+    Partition,    ///< a divide-and-conquer split happened
+    Custom        ///< algorithm-specific milestone, see `detail`
 };
 
 [[nodiscard]] inline std::string toString(EventType type) {
     switch (type) {
         case EventType::Comparison: return "comparison";
-        case EventType::Swap:       return "swap";
-        case EventType::Move:       return "move";
-        case EventType::Access:     return "access";
-        case EventType::Visit:      return "visit";
-        case EventType::Relax:      return "relax";
-        case EventType::Partition:  return "partition";
-        case EventType::Custom:     return "custom";
+        case EventType::Swap: return "swap";
+        case EventType::Move: return "move";
+        case EventType::Access: return "access";
+        case EventType::Visit: return "visit";
+        case EventType::Relax: return "relax";
+        case EventType::Partition: return "partition";
+        case EventType::Custom: return "custom";
     }
     return "unknown";
 }
@@ -58,8 +58,7 @@ struct AlgorithmEvent {
     AlgorithmEvent() = default;
     AlgorithmEvent(EventType t, std::size_t l, std::size_t r, std::string d = {})
         : type(t), lhs(l), rhs(r), detail(std::move(d)) {}
-    explicit AlgorithmEvent(EventType t, std::string d = {})
-        : type(t), detail(std::move(d)) {}
+    explicit AlgorithmEvent(EventType t, std::string d = {}) : type(t), detail(std::move(d)) {}
 };
 
 /// Abstract listener.
@@ -135,7 +134,8 @@ public:
 
     [[nodiscard]] std::string report() const override {
         std::ostringstream os;
-        for (std::size_t i = 0; i < lines_.size(); ++i) os << "  " << (i + 1) << ". " << lines_[i] << "\n";
+        for (std::size_t i = 0; i < lines_.size(); ++i)
+            os << "  " << (i + 1) << ". " << lines_[i] << "\n";
         if (seen_ > lines_.size()) os << "  ... " << (seen_ - lines_.size()) << " more\n";
         return os.str();
     }
@@ -178,6 +178,6 @@ private:
     std::vector<std::shared_ptr<AlgorithmObserver>> observers_;
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_CORE_OBSERVER_HPP
+#endif   // DAEDALUS_CORE_OBSERVER_HPP

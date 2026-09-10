@@ -45,8 +45,8 @@ public:
 class IndexOutOfRange : public ContainerError {
 public:
     IndexOutOfRange(std::size_t index, std::size_t size)
-        : ContainerError("index " + std::to_string(index) +
-                         " out of range for container of size " + std::to_string(size)),
+        : ContainerError("index " + std::to_string(index) + " out of range for container of size " +
+                         std::to_string(size)),
           index_(index),
           size_(size) {}
 
@@ -129,6 +129,6 @@ inline void require(bool cond, const std::string& message) {
     if (!cond) throw InvalidArgument(message);
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_CORE_EXCEPTION_HPP
+#endif   // DAEDALUS_CORE_EXCEPTION_HPP

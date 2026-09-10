@@ -59,8 +59,12 @@ namespace platform {
 #if defined(_WIN32)
 using SocketHandle = SOCKET;
 inline constexpr SocketHandle kInvalidSocket = INVALID_SOCKET;
-inline void closeSocket(SocketHandle handle) { ::closesocket(handle); }
-inline int lastError() { return ::WSAGetLastError(); }
+inline void closeSocket(SocketHandle handle) {
+    ::closesocket(handle);
+}
+inline int lastError() {
+    return ::WSAGetLastError();
+}
 
 /// Winsock needs explicit startup exactly once per process.
 struct WinsockGuard {
@@ -72,16 +76,22 @@ struct WinsockGuard {
     }
     ~WinsockGuard() { ::WSACleanup(); }
 };
-inline void ensureInitialised() { static WinsockGuard guard; }
+inline void ensureInitialised() {
+    static WinsockGuard guard;
+}
 #else
 using SocketHandle = int;
 inline constexpr SocketHandle kInvalidSocket = -1;
-inline void closeSocket(SocketHandle handle) { ::close(handle); }
-inline int lastError() { return errno; }
+inline void closeSocket(SocketHandle handle) {
+    ::close(handle);
+}
+inline int lastError() {
+    return errno;
+}
 inline void ensureInitialised() {}
 #endif
 
-}  // namespace platform
+}   // namespace platform
 
 struct ServerConfig {
     std::string host{"127.0.0.1"};
@@ -132,8 +142,8 @@ public:
         }
 
         int reuse = 1;
-        ::setsockopt(listening_, SOL_SOCKET, SO_REUSEADDR,
-                     reinterpret_cast<const char*>(&reuse), sizeof(reuse));
+        ::setsockopt(listening_, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&reuse),
+                     sizeof(reuse));
 
         sockaddr_in address{};
         address.sin_family = AF_INET;
@@ -148,8 +158,8 @@ public:
             const int code = platform::lastError();
             platform::closeSocket(listening_);
             listening_ = platform::kInvalidSocket;
-            throw DaedalusError("bind failed on port " + std::to_string(config_.port) +
-                                " (error " + std::to_string(code) + ")");
+            throw DaedalusError("bind failed on port " + std::to_string(config_.port) + " (error " +
+                                std::to_string(code) + ")");
         }
         if (::listen(listening_, config_.listenBacklog) != 0) {
             platform::closeSocket(listening_);
@@ -230,9 +240,8 @@ private:
 
             // Shed rather than block: a full queue means the pool is saturated,
             // and stalling the accept loop would make it worse.
-            if (!pool_->trySubmit([this, client, clientAddress] {
-                    serveConnection(client, clientAddress);
-                })) {
+            if (!pool_->trySubmit(
+                    [this, client, clientAddress] { serveConnection(client, clientAddress); })) {
                 ++shedded_;
                 const std::string body =
                     HttpResponse::error(503, "server is busy").serialise(false);
@@ -261,14 +270,12 @@ private:
                 response.withSecurityHeaders();
 
                 if (config_.logRequests || accessLogger_) {
-                    const double elapsed =
-                        std::chrono::duration<double, std::milli>(
-                            std::chrono::steady_clock::now() - started)
-                            .count();
+                    const double elapsed = std::chrono::duration<double, std::milli>(
+                                               std::chrono::steady_clock::now() - started)
+                                               .count();
                     if (accessLogger_) {
-                        accessLogger_(RequestRecord{request.method, request.path,
-                                                    response.status(), response.body().size(),
-                                                    elapsed});
+                        accessLogger_(RequestRecord{request.method, request.path, response.status(),
+                                                    response.body().size(), elapsed});
                     }
                 }
             } catch (const InvalidArgument& bad) {
@@ -278,8 +285,7 @@ private:
                 // Never leak an internal message to the client; log-worthy
                 // detail stays server-side.
                 (void)failure;
-                response = HttpResponse::error(500, "internal server error")
-                               .withSecurityHeaders();
+                response = HttpResponse::error(500, "internal server error").withSecurityHeaders();
                 keepAlive = false;
             }
 
@@ -292,16 +298,15 @@ private:
 
     void applyReceiveTimeout(platform::SocketHandle client) const {
 #if defined(_WIN32)
-        DWORD milliseconds =
-            static_cast<DWORD>(config_.receiveTimeout.count() * 1000);
-        ::setsockopt(client, SOL_SOCKET, SO_RCVTIMEO,
-                     reinterpret_cast<const char*>(&milliseconds), sizeof(milliseconds));
+        DWORD milliseconds = static_cast<DWORD>(config_.receiveTimeout.count() * 1000);
+        ::setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&milliseconds),
+                     sizeof(milliseconds));
 #else
         timeval timeout{};
         timeout.tv_sec = static_cast<long>(config_.receiveTimeout.count());
         timeout.tv_usec = 0;
-        ::setsockopt(client, SOL_SOCKET, SO_RCVTIMEO,
-                     reinterpret_cast<const char*>(&timeout), sizeof(timeout));
+        ::setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&timeout),
+                     sizeof(timeout));
 #endif
     }
 
@@ -335,8 +340,8 @@ private:
         std::size_t sent = 0;
         while (sent < data.size()) {
 #if defined(_WIN32)
-            const int written = ::send(client, data.data() + sent,
-                                       static_cast<int>(data.size() - sent), 0);
+            const int written =
+                ::send(client, data.data() + sent, static_cast<int>(data.size() - sent), 0);
 #else
             // MSG_NOSIGNAL: a client that vanishes mid-write must not kill the
             // process with SIGPIPE.
@@ -361,6 +366,6 @@ private:
     AccessLogger accessLogger_;
 };
 
-}  // namespace daedalus::net
+}   // namespace daedalus::net
 
-#endif  // DAEDALUS_NET_SERVER_HPP
+#endif   // DAEDALUS_NET_SERVER_HPP

@@ -149,6 +149,6 @@ private:
     size_type componentCount_;
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_SETS_DISJOINT_SET_HPP
+#endif   // DAEDALUS_SETS_DISJOINT_SET_HPP

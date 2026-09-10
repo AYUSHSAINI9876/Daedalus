@@ -20,8 +20,8 @@
 #include <algorithm>
 #include <cstddef>
 #include <limits>
-#include <utility>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "daedalus/graph/Graph.hpp"
@@ -33,8 +33,8 @@ namespace daedalus {
 template <typename V, typename W>
 struct MaxFlowResult {
     W maxFlow{};
-    std::vector<V> sourceSide;                   ///< vertices reachable in the residual graph
-    std::vector<LabelledEdge<V, W>> minCutEdges; ///< saturated edges crossing the cut
+    std::vector<V> sourceSide;                     ///< vertices reachable in the residual graph
+    std::vector<LabelledEdge<V, W>> minCutEdges;   ///< saturated edges crossing the cut
     W minCutCapacity{};
 };
 
@@ -136,7 +136,7 @@ void describeMinimumCut(const Graph<V, W>& graph, const ResidualNetwork<W>& netw
     }
 }
 
-}  // namespace detail
+}   // namespace detail
 
 // ---------------------------------------------------------------------------
 
@@ -145,7 +145,8 @@ void describeMinimumCut(const Graph<V, W>& graph, const ResidualNetwork<W>& netw
 /// -- plain Ford-Fulkerson with a bad path choice can take capacity-many
 /// rounds, or fail to terminate at all on irrational capacities.
 template <typename V, typename W>
-[[nodiscard]] MaxFlowResult<V, W> edmondsKarp(const Graph<V, W>& graph, const std::type_identity_t<V>& source,
+[[nodiscard]] MaxFlowResult<V, W> edmondsKarp(const Graph<V, W>& graph,
+                                              const std::type_identity_t<V>& source,
                                               const std::type_identity_t<V>& sink) {
     const VertexId from = graph.id(source);
     const VertexId to = graph.id(sink);
@@ -201,7 +202,9 @@ template <typename V, typename W>
 /// examined twice within a phase. The level graph's depth strictly increases
 /// each phase, which bounds the number of phases at V.
 template <typename V, typename W>
-[[nodiscard]] MaxFlowResult<V, W> dinic(const Graph<V, W>& graph, const std::type_identity_t<V>& source, const std::type_identity_t<V>& sink) {
+[[nodiscard]] MaxFlowResult<V, W> dinic(const Graph<V, W>& graph,
+                                        const std::type_identity_t<V>& source,
+                                        const std::type_identity_t<V>& sink) {
     const VertexId from = graph.id(source);
     const VertexId to = graph.id(sink);
     MaxFlowResult<V, W> result;
@@ -268,7 +271,8 @@ template <typename V, typename W>
 /// Minimum cut, stated as its own function because that is usually the question
 /// being asked. Equal in value to the maximum flow (Ford-Fulkerson theorem).
 template <typename V, typename W>
-[[nodiscard]] MaxFlowResult<V, W> minimumCut(const Graph<V, W>& graph, const std::type_identity_t<V>& source,
+[[nodiscard]] MaxFlowResult<V, W> minimumCut(const Graph<V, W>& graph,
+                                             const std::type_identity_t<V>& source,
                                              const std::type_identity_t<V>& sink) {
     return dinic(graph, source, sink);
 }
@@ -319,7 +323,7 @@ template <typename V, typename W>
     MatchingResult<V> result;
 
     for (VertexId v = 0; v < n; ++v) {
-        if (colouring.colours[v] != 0) continue;          // left side only
+        if (colouring.colours[v] != 0) continue;   // left side only
         if (matchedWith[v] != kUnmatched) continue;
         augmenter.seen.assign(n, false);
         (void)augmenter.tryAssign(v);
@@ -333,6 +337,6 @@ template <typename V, typename W>
     return result;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_GRAPH_NETWORK_FLOW_HPP
+#endif   // DAEDALUS_GRAPH_NETWORK_FLOW_HPP

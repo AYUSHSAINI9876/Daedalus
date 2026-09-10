@@ -155,8 +155,8 @@ namespace daedalus {
             const std::uint64_t leaving =
                 (static_cast<unsigned char>(text[start]) * highestPower) % kModulus;
             windowHash = (windowHash + kModulus - leaving) % kModulus;
-            windowHash = (windowHash * kBase + static_cast<unsigned char>(text[start + m])) %
-                         kModulus;
+            windowHash =
+                (windowHash * kBase + static_cast<unsigned char>(text[start + m])) % kModulus;
         }
     }
     return matches;
@@ -272,8 +272,7 @@ namespace daedalus {
 
         nextRank[order[0]] = 0;
         for (std::size_t i = 1; i < n; ++i) {
-            nextRank[order[i]] =
-                nextRank[order[i - 1]] + (byPair(order[i - 1], order[i]) ? 1 : 0);
+            nextRank[order[i]] = nextRank[order[i - 1]] + (byPair(order[i - 1], order[i]) ? 1 : 0);
         }
         rank = nextRank;
         if (rank[order[n - 1]] == n - 1) break;   // all ranks distinct: done
@@ -335,8 +334,8 @@ namespace daedalus {
 class AhoCorasick {
 public:
     struct Match {
-        std::size_t position;     ///< start index in the text
-        std::size_t patternIndex; ///< which pattern matched
+        std::size_t position;       ///< start index in the text
+        std::size_t patternIndex;   ///< which pattern matched
         std::string pattern;
     };
 
@@ -557,6 +556,6 @@ private:
     return best;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_STRINGS_HPP
+#endif   // DAEDALUS_ALGORITHMS_STRINGS_HPP

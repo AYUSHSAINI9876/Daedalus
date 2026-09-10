@@ -163,8 +163,8 @@ private:
                 continue;
             }
             const std::size_t end = path.find('/', start);
-            segments.push_back(path.substr(
-                start, end == std::string::npos ? std::string::npos : end - start));
+            segments.push_back(
+                path.substr(start, end == std::string::npos ? std::string::npos : end - start));
             if (end == std::string::npos) break;
             start = end + 1;
         }
@@ -240,11 +240,9 @@ private:
     std::unique_ptr<Node> root_;
     std::vector<Middleware> middleware_;
     std::size_t routeCount_{0};
-    Handler notFound_ = [](const HttpRequest&) {
-        return HttpResponse::error(404, "not found");
-    };
+    Handler notFound_ = [](const HttpRequest&) { return HttpResponse::error(404, "not found"); };
 };
 
-}  // namespace daedalus::net
+}   // namespace daedalus::net
 
-#endif  // DAEDALUS_NET_ROUTER_HPP
+#endif   // DAEDALUS_NET_ROUTER_HPP

@@ -58,7 +58,7 @@ public:
             } else if (node->value < value) {
                 link = &node->right;
             } else {
-                return;  // already present
+                return;   // already present
             }
         }
         *link = new Node(value);
@@ -137,6 +137,6 @@ private:
     }
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_BINARY_SEARCH_TREE_HPP
+#endif   // DAEDALUS_TREES_BINARY_SEARCH_TREE_HPP

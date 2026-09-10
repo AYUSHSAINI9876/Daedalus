@@ -57,6 +57,6 @@ concept StrictWeakOrder = std::predicate<F, const T&, const T&>;
 template <typename F, typename T>
 concept ElementVisitor = std::invocable<F, const T&>;
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_CORE_CONCEPTS_HPP
+#endif   // DAEDALUS_CORE_CONCEPTS_HPP

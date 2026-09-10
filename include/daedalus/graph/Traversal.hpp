@@ -44,7 +44,8 @@ struct TraversalResult {
 /// Breadth-first search from `source`. Distances are in edges, so on an
 /// unweighted graph this is already the shortest-path answer.
 template <typename V, typename W>
-[[nodiscard]] TraversalResult<V> breadthFirstSearch(const Graph<V, W>& graph, const std::type_identity_t<V>& source) {
+[[nodiscard]] TraversalResult<V> breadthFirstSearch(const Graph<V, W>& graph,
+                                                    const std::type_identity_t<V>& source) {
     const VertexId start = graph.id(source);
     const std::size_t n = graph.vertexCount();
 
@@ -72,7 +73,8 @@ template <typename V, typename W>
 /// Depth-first search with an explicit stack. Children are pushed in reverse so
 /// the visit order matches the recursive version exactly.
 template <typename V, typename W>
-[[nodiscard]] TraversalResult<V> depthFirstSearch(const Graph<V, W>& graph, const std::type_identity_t<V>& source) {
+[[nodiscard]] TraversalResult<V> depthFirstSearch(const Graph<V, W>& graph,
+                                                  const std::type_identity_t<V>& source) {
     const VertexId start = graph.id(source);
     const std::size_t n = graph.vertexCount();
 
@@ -108,7 +110,8 @@ template <typename V, typename W>
 /// Recursive DFS, kept alongside the iterative one so the two can be compared.
 /// Only safe when the graph's depth is bounded -- see the class comment.
 template <typename V, typename W>
-[[nodiscard]] std::vector<V> depthFirstSearchRecursive(const Graph<V, W>& graph, const std::type_identity_t<V>& source) {
+[[nodiscard]] std::vector<V> depthFirstSearchRecursive(const Graph<V, W>& graph,
+                                                       const std::type_identity_t<V>& source) {
     std::vector<bool> visited(graph.vertexCount(), false);
     std::vector<V> order;
 
@@ -243,7 +246,7 @@ template <typename V, typename W>
             while (!stack.empty()) {
                 const auto entry = stack.popBack();
                 for (const auto& edge : graph.outgoing(entry.first)) {
-                    if (edge.to == entry.second) continue;  // the edge we came in on
+                    if (edge.to == entry.second) continue;   // the edge we came in on
                     if (visited[edge.to]) return true;
                     visited[edge.to] = true;
                     stack.pushBack({edge.to, entry.first});
@@ -343,6 +346,6 @@ template <typename V, typename W>
     return order;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_GRAPH_TRAVERSAL_HPP
+#endif   // DAEDALUS_GRAPH_TRAVERSAL_HPP

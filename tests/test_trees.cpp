@@ -62,7 +62,7 @@ void exerciseAgainstStdSet(Tree& tree, Invariant invariant, std::uint32_t seed) 
     CHECK_EQ(tree.toVector(), (std::vector<int>(reference.begin(), reference.end())));
 }
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  BinarySearchTree
@@ -83,13 +83,13 @@ DAEDALUS_TEST(BinarySearchTree, duplicates_are_ignored) {
 
 DAEDALUS_TEST(BinarySearchTree, erase_covers_all_three_cases) {
     BinarySearchTree<int> tree{50, 30, 70, 20, 40, 60, 80, 75};
-    CHECK_TRUE(tree.erase(20));                       // leaf
+    CHECK_TRUE(tree.erase(20));   // leaf
     CHECK_EQ(tree.toVector(), (std::vector<int>{30, 40, 50, 60, 70, 75, 80}));
-    CHECK_TRUE(tree.erase(30));                       // one child
+    CHECK_TRUE(tree.erase(30));   // one child
     CHECK_EQ(tree.toVector(), (std::vector<int>{40, 50, 60, 70, 75, 80}));
-    CHECK_TRUE(tree.erase(70));                       // two children
+    CHECK_TRUE(tree.erase(70));   // two children
     CHECK_EQ(tree.toVector(), (std::vector<int>{40, 50, 60, 75, 80}));
-    CHECK_TRUE(tree.erase(50));                       // the root
+    CHECK_TRUE(tree.erase(50));   // the root
     CHECK_EQ(tree.toVector(), (std::vector<int>{40, 60, 75, 80}));
     CHECK_FALSE(tree.erase(999));
     CHECK_TRUE(tree.isValidBST());
@@ -143,11 +143,11 @@ DAEDALUS_TEST(BinarySearchTree, visitor_receives_values_with_depth) {
 DAEDALUS_TEST(BinarySearchTree, degenerates_on_sorted_input) {
     BinarySearchTree<int> tree;
     for (int i = 0; i < 64; ++i) tree.insert(i);
-    CHECK_EQ(tree.height(), 63);        // a linked list, not a tree
+    CHECK_EQ(tree.height(), 63);   // a linked list, not a tree
     CHECK_FALSE(tree.isBalanced());
 
     tree.rebalance();
-    CHECK_EQ(tree.height(), 6);         // ceil(log2(64)) - 1
+    CHECK_EQ(tree.height(), 6);   // ceil(log2(64)) - 1
     CHECK_TRUE(tree.isBalanced());
     CHECK_TRUE(tree.isValidBST());
     CHECK_EQ(tree.size(), 64u);
@@ -173,7 +173,7 @@ DAEDALUS_TEST(BinarySearchTree, order_statistics_and_neighbours) {
 
     CHECK_EQ(tree.successor(50).value(), 60);
     CHECK_EQ(tree.predecessor(50).value(), 40);
-    CHECK_EQ(tree.successor(35).value(), 40);      // absent keys work too
+    CHECK_EQ(tree.successor(35).value(), 40);   // absent keys work too
     CHECK_FALSE(tree.successor(80).has_value());
     CHECK_FALSE(tree.predecessor(20).has_value());
 }
@@ -198,7 +198,7 @@ DAEDALUS_TEST(BinarySearchTree, shape_metrics) {
     BinarySearchTree<int> tree{4, 2, 6, 1, 3, 5, 7};
     CHECK_EQ(tree.countLeaves(), 4u);
     CHECK_EQ(tree.countInternalNodes(), 3u);
-    CHECK_EQ(tree.diameter(), 4);          // 1 -> 2 -> 4 -> 6 -> 5, four edges
+    CHECK_EQ(tree.diameter(), 4);   // 1 -> 2 -> 4 -> 6 -> 5, four edges
     CHECK_TRUE(tree.isBalanced());
 }
 
@@ -233,8 +233,8 @@ DAEDALUS_TEST(BinarySearchTree, clear_then_reuse) {
 
 DAEDALUS_TEST(BinarySearchTree, matches_std_set_under_random_load) {
     BinarySearchTree<int> tree;
-    exerciseAgainstStdSet(tree, [](const BinarySearchTree<int>& t) { return t.isValidBST(); },
-                          20260910u);
+    exerciseAgainstStdSet(
+        tree, [](const BinarySearchTree<int>& t) { return t.isValidBST(); }, 20260910u);
 }
 
 DAEDALUS_TEST(BinarySearchTree, works_with_strings) {
@@ -297,8 +297,7 @@ DAEDALUS_TEST(AVLTree, erase_rebalances) {
 
 DAEDALUS_TEST(AVLTree, matches_std_set_under_random_load) {
     AVLTree<int> tree;
-    exerciseAgainstStdSet(tree, [](const AVLTree<int>& t) { return t.isAVLBalanced(); },
-                          424242u);
+    exerciseAgainstStdSet(tree, [](const AVLTree<int>& t) { return t.isAVLBalanced(); }, 424242u);
 }
 
 // ============================================================================
@@ -340,8 +339,8 @@ DAEDALUS_TEST(RedBlackTree, black_height_is_uniform) {
 
 DAEDALUS_TEST(RedBlackTree, matches_std_set_under_random_load) {
     RedBlackTree<int> tree;
-    exerciseAgainstStdSet(tree, [](const RedBlackTree<int>& t) { return t.verifyProperties(); },
-                          20261231u);
+    exerciseAgainstStdSet(
+        tree, [](const RedBlackTree<int>& t) { return t.verifyProperties(); }, 20261231u);
 }
 
 DAEDALUS_TEST(RedBlackTree, erase_missing_key_is_a_no_op) {
@@ -398,8 +397,7 @@ DAEDALUS_TEST(SplayTree, repeated_access_is_cheap) {
 
 DAEDALUS_TEST(SplayTree, matches_std_set_under_random_load) {
     SplayTree<int> tree;
-    exerciseAgainstStdSet(tree, [](const SplayTree<int>& t) { return t.isValidBST(); },
-                          5150u);
+    exerciseAgainstStdSet(tree, [](const SplayTree<int>& t) { return t.isValidBST(); }, 5150u);
 }
 
 // ============================================================================
@@ -447,8 +445,8 @@ DAEDALUS_TEST(Treap, seeding_is_reproducible) {
 
 DAEDALUS_TEST(Treap, matches_std_set_under_random_load) {
     Treap<int> treap;
-    exerciseAgainstStdSet(treap, [](const Treap<int>& t) { return t.verifyHeapProperty(); },
-                          31337u);
+    exerciseAgainstStdSet(
+        treap, [](const Treap<int>& t) { return t.verifyHeapProperty(); }, 31337u);
 }
 
 // ============================================================================

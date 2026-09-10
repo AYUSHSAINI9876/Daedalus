@@ -254,6 +254,6 @@ private:
     size_type size_{0};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_LINEAR_DEQUE_HPP
+#endif   // DAEDALUS_LINEAR_DEQUE_HPP

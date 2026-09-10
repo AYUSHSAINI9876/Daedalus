@@ -28,8 +28,8 @@
 #include <functional>
 #include <limits>
 #include <optional>
-#include <utility>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "daedalus/graph/Graph.hpp"
@@ -88,7 +88,8 @@ template <typename V, typename W>
 /// revisits, so it would return a wrong answer rather than an error. This
 /// implementation throws instead of lying.
 template <typename V, typename W>
-[[nodiscard]] ShortestPathResult<V, W> dijkstra(const Graph<V, W>& graph, const std::type_identity_t<V>& source) {
+[[nodiscard]] ShortestPathResult<V, W> dijkstra(const Graph<V, W>& graph,
+                                                const std::type_identity_t<V>& source) {
     const std::size_t n = graph.vertexCount();
     const VertexId start = graph.id(source);
 
@@ -127,7 +128,8 @@ template <typename V, typename W>
 /// Bellman-Ford. Slower than Dijkstra but handles negative edges, and a V-th
 /// round that still improves something proves a negative cycle exists.
 template <typename V, typename W>
-[[nodiscard]] ShortestPathResult<V, W> bellmanFord(const Graph<V, W>& graph, const std::type_identity_t<V>& source) {
+[[nodiscard]] ShortestPathResult<V, W> bellmanFord(const Graph<V, W>& graph,
+                                                   const std::type_identity_t<V>& source) {
     const std::size_t n = graph.vertexCount();
     const VertexId start = graph.id(source);
 
@@ -170,7 +172,8 @@ template <typename V, typename W>
 /// distinct distances, so a deque replaces the heap: a zero-weight edge goes to
 /// the front, a one-weight edge to the back. Linear time, no log factor.
 template <typename V, typename W>
-[[nodiscard]] ShortestPathResult<V, W> zeroOneBfs(const Graph<V, W>& graph, const std::type_identity_t<V>& source) {
+[[nodiscard]] ShortestPathResult<V, W> zeroOneBfs(const Graph<V, W>& graph,
+                                                  const std::type_identity_t<V>& source) {
     const std::size_t n = graph.vertexCount();
     const VertexId start = graph.id(source);
 
@@ -207,7 +210,8 @@ template <typename V, typename W>
 /// the goal (admissibility) or the result can be wrong; with a heuristic that
 /// returns zero this degenerates to exactly Dijkstra.
 template <typename V, typename W>
-[[nodiscard]] ShortestPathResult<V, W> aStar(const Graph<V, W>& graph, const std::type_identity_t<V>& source,
+[[nodiscard]] ShortestPathResult<V, W> aStar(const Graph<V, W>& graph,
+                                             const std::type_identity_t<V>& source,
                                              const std::type_identity_t<V>& goal,
                                              const std::function<W(const V&)>& heuristic) {
     const std::size_t n = graph.vertexCount();
@@ -310,7 +314,8 @@ template <typename V, typename W>
 /// Walks the next-hop matrix into an explicit vertex sequence.
 template <typename V, typename W>
 [[nodiscard]] std::vector<V> reconstructPath(const Graph<V, W>& graph,
-                                             const AllPairsResult<V, W>& result, const std::type_identity_t<V>& from,
+                                             const AllPairsResult<V, W>& result,
+                                             const std::type_identity_t<V>& from,
                                              const std::type_identity_t<V>& to) {
     VertexId current = graph.id(from);
     const VertexId target = graph.id(to);
@@ -385,8 +390,7 @@ template <typename V, typename W>
         firstHop[source] = source;
         std::vector<VertexId> chain;
         for (VertexId target = 0; target < n; ++target) {
-            if (!single.reachable(target) ||
-                firstHop[target] != AllPairsResult<V, W>::kNoNext) {
+            if (!single.reachable(target) || firstHop[target] != AllPairsResult<V, W>::kNoNext) {
                 continue;
             }
             chain.clear();
@@ -408,6 +412,6 @@ template <typename V, typename W>
     return result;
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_GRAPH_SHORTEST_PATH_HPP
+#endif   // DAEDALUS_GRAPH_SHORTEST_PATH_HPP

@@ -51,8 +51,7 @@ public:
 
         bitCount_ = static_cast<size_type>(std::ceil(bits));
         if (bitCount_ < 8) bitCount_ = 8;
-        hashCount_ = static_cast<size_type>(
-            std::round(static_cast<double>(bitCount_) / n * ln2));
+        hashCount_ = static_cast<size_type>(std::round(static_cast<double>(bitCount_) / n * ln2));
         if (hashCount_ < 1) hashCount_ = 1;
         if (hashCount_ > 16) hashCount_ = 16;
 
@@ -119,7 +118,7 @@ private:
         mixed ^= mixed >> 33;
         mixed *= 0xC4CEB9FE1A85EC53ull;
         mixed ^= mixed >> 33;
-        return {base, mixed | 1ull};      // odd second seed keeps the walk full-cycle
+        return {base, mixed | 1ull};   // odd second seed keeps the walk full-cycle
     }
 
     [[nodiscard]] size_type bitFor(std::uint64_t h1, std::uint64_t h2, size_type i) const {
@@ -142,6 +141,6 @@ private:
     double targetRate_{0.01};
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_HASHING_BLOOM_FILTER_HPP
+#endif   // DAEDALUS_HASHING_BLOOM_FILTER_HPP

@@ -169,6 +169,6 @@ public:
     }
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_CORE_CONTAINER_HPP
+#endif   // DAEDALUS_CORE_CONTAINER_HPP

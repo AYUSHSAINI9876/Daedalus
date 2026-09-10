@@ -60,7 +60,7 @@ public:
 
         this->root_ = splay(this->root_, value);
         if (!(value < this->root_->value) && !(this->root_->value < value)) {
-            return;  // already present, and now at the root
+            return;   // already present, and now at the root
         }
 
         Node* fresh = new Node(value);
@@ -157,7 +157,7 @@ private:
             } else if (root->value < key) {
                 if (root->right == nullptr) break;
                 if (root->right->value < key) {
-                    root = rotateLeft(root);    // zag-zag
+                    root = rotateLeft(root);   // zag-zag
                     if (root->right == nullptr) break;
                 }
                 if (leftMax == nullptr) {
@@ -185,6 +185,6 @@ private:
     }
 };
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_TREES_SPLAY_TREE_HPP
+#endif   // DAEDALUS_TREES_SPLAY_TREE_HPP

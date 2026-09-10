@@ -38,7 +38,7 @@ std::vector<int> ascending(std::size_t count) {
     return data;
 }
 
-}  // namespace
+}   // namespace
 
 // ============================================================================
 //  Sorting
@@ -265,8 +265,7 @@ DAEDALUS_TEST(Searching, every_algorithm_finds_present_and_absent_keys) {
     for (int target : {0, 1, 499, 999}) {
         CHECK_EQ(linearSearch(data, target).value(), static_cast<std::size_t>(target));
         CHECK_EQ(binarySearch(data, target).value(), static_cast<std::size_t>(target));
-        CHECK_EQ(binarySearchRecursive(data, target).value(),
-                 static_cast<std::size_t>(target));
+        CHECK_EQ(binarySearchRecursive(data, target).value(), static_cast<std::size_t>(target));
         CHECK_EQ(exponentialSearch(data, target).value(), static_cast<std::size_t>(target));
         CHECK_EQ(jumpSearch(data, target).value(), static_cast<std::size_t>(target));
         CHECK_EQ(interpolationSearch(data, target).value(), static_cast<std::size_t>(target));
@@ -301,8 +300,8 @@ DAEDALUS_TEST(Searching, bounds_and_occurrence_counting) {
     CHECK_EQ(lastOccurrence(data, 2).value(), 3u);
     CHECK_FALSE(firstOccurrence(data, 4).has_value());
     CHECK_FALSE(lastOccurrence(data, 0).has_value());
-    CHECK_EQ(lowerBound(data, 0), 0u);      // insertion point before everything
-    CHECK_EQ(lowerBound(data, 9), 6u);      // and after everything
+    CHECK_EQ(lowerBound(data, 0), 0u);   // insertion point before everything
+    CHECK_EQ(lowerBound(data, 9), 6u);   // and after everything
 }
 
 DAEDALUS_TEST(Searching, matches_std_lower_bound_under_random_load) {
@@ -315,8 +314,8 @@ DAEDALUS_TEST(Searching, matches_std_lower_bound_under_random_load) {
             std::lower_bound(data.begin(), data.end(), target) - data.begin());
         CHECK_EQ(lowerBound(data, target), expected);
         CHECK_EQ(upperBound(data, target),
-                 static_cast<std::size_t>(
-                     std::upper_bound(data.begin(), data.end(), target) - data.begin()));
+                 static_cast<std::size_t>(std::upper_bound(data.begin(), data.end(), target) -
+                                          data.begin()));
     }
 }
 
@@ -340,8 +339,7 @@ DAEDALUS_TEST(Searching, rotated_array) {
 DAEDALUS_TEST(Searching, rotated_search_matches_linear_scan) {
     for (std::size_t rotation = 0; rotation < 20; ++rotation) {
         std::vector<int> data = ascending(20);
-        std::rotate(data.begin(), data.begin() + static_cast<std::ptrdiff_t>(rotation),
-                    data.end());
+        std::rotate(data.begin(), data.begin() + static_cast<std::ptrdiff_t>(rotation), data.end());
         for (int target = -2; target < 22; ++target) {
             const auto found = searchRotated(data, target);
             const auto expected = linearSearch(data, target);
@@ -359,8 +357,7 @@ DAEDALUS_TEST(Searching, peak_finding) {
 
 DAEDALUS_TEST(Searching, binary_search_on_the_answer) {
     // Smallest x with x*x >= 1000.
-    const long long root = binarySearchAnswer(
-        0, 1000, [](long long x) { return x * x >= 1000; });
+    const long long root = binarySearchAnswer(0, 1000, [](long long x) { return x * x >= 1000; });
     CHECK_EQ(root, 32);
     CHECK_THROWS_AS(binarySearchAnswer(10, 1, [](long long) { return true; }), InvalidArgument);
 }
@@ -383,14 +380,14 @@ DAEDALUS_TEST(Searching, integer_square_root) {
 DAEDALUS_TEST(Strings, all_matchers_agree_with_the_naive_one) {
     const std::vector<std::pair<std::string, std::string>> cases{
         {"abababcabababcabc", "ababc"},
-        {"aaaaaaaaaa", "aaa"},          // heavy overlap
-        {"abcdefghij", "j"},            // match at the very end
-        {"abcdefghij", "a"},            // and at the start
-        {"abcdefghij", "xyz"},          // no match
-        {"", "abc"},                    // empty text
-        {"abc", ""},                    // empty pattern
-        {"mississippi", "issi"},        // overlapping occurrences
-        {"aaa", "aaaa"},                // pattern longer than text
+        {"aaaaaaaaaa", "aaa"},     // heavy overlap
+        {"abcdefghij", "j"},       // match at the very end
+        {"abcdefghij", "a"},       // and at the start
+        {"abcdefghij", "xyz"},     // no match
+        {"", "abc"},               // empty text
+        {"abc", ""},               // empty pattern
+        {"mississippi", "issi"},   // overlapping occurrences
+        {"aaa", "aaaa"},           // pattern longer than text
     };
 
     for (const auto& testCase : cases) {
@@ -422,8 +419,7 @@ DAEDALUS_TEST(Strings, matchers_agree_on_random_binary_text) {
 }
 
 DAEDALUS_TEST(Strings, prefix_function_and_z_array) {
-    CHECK_EQ(prefixFunction("aabaaab"),
-             (std::vector<std::size_t>{0, 1, 0, 1, 2, 2, 3}));
+    CHECK_EQ(prefixFunction("aabaaab"), (std::vector<std::size_t>{0, 1, 0, 1, 2, 2, 3}));
     CHECK_EQ(zArray("aabxaab"), (std::vector<std::size_t>{7, 1, 0, 0, 3, 1, 0}));
     CHECK_EQ(zArray("").size(), 0u);
 }
@@ -579,8 +575,8 @@ DAEDALUS_TEST(DynamicProgramming, knapsack_01) {
 DAEDALUS_TEST(DynamicProgramming, knapsack_variants_differ_as_expected) {
     const std::vector<long long> weights{2, 3};
     const std::vector<long long> values{3, 4};
-    CHECK_EQ(knapsack01Value(weights, values, 6), 7);      // one of each
-    CHECK_EQ(unboundedKnapsack(weights, values, 6), 9);    // three of the first
+    CHECK_EQ(knapsack01Value(weights, values, 6), 7);     // one of each
+    CHECK_EQ(unboundedKnapsack(weights, values, 6), 9);   // three of the first
     CHECK_THROWS_AS(knapsack01({1}, {1, 2}, 5), InvalidArgument);
 }
 
@@ -616,13 +612,13 @@ DAEDALUS_TEST(DynamicProgramming, knapsack_matches_brute_force) {
 DAEDALUS_TEST(DynamicProgramming, coin_change) {
     const auto result = coinChangeMinimum({1, 3, 4}, 6);
     CHECK_TRUE(result.possible);
-    CHECK_EQ(result.coinCount, 2u);                       // 3 + 3, not greedy's 4+1+1
+    CHECK_EQ(result.coinCount, 2u);   // 3 + 3, not greedy's 4+1+1
     CHECK_EQ(result.coinsUsed, (std::vector<long long>{3, 3}));
 
     CHECK_FALSE(coinChangeMinimum({5, 10}, 3).possible);
     CHECK_TRUE(coinChangeMinimum({1, 2}, 0).possible);
     CHECK_EQ(coinChangeMinimum({1, 2}, 0).coinCount, 0u);
-    CHECK_EQ(coinChangeWays({1, 2, 5}, 5), 4);            // 5, 2+2+1, 2+1+1+1, 1x5
+    CHECK_EQ(coinChangeWays({1, 2, 5}, 5), 4);   // 5, 2+2+1, 2+1+1+1, 1x5
     CHECK_EQ(coinChangeWays({2}, 3), 0);
 }
 
@@ -679,7 +675,7 @@ DAEDALUS_TEST(DynamicProgramming, classic_one_dimensional_problems) {
     CHECK_EQ(rodCutting({1, 5, 8, 9, 10, 17, 17, 20}, 8), 22);
     CHECK_EQ(houseRobber({2, 7, 9, 3, 1}), 12);
     CHECK_EQ(houseRobber({}), 0);
-    CHECK_EQ(houseRobberCircular({2, 3, 2}), 3);      // cannot take both 2s
+    CHECK_EQ(houseRobberCircular({2, 3, 2}), 3);   // cannot take both 2s
     CHECK_EQ(houseRobberCircular({1, 2, 3, 1}), 4);
     CHECK_EQ(houseRobberCircular({5}), 5);
     CHECK_EQ(minimumPathSum({{1, 3, 1}, {1, 5, 1}, {4, 2, 1}}), 7);
@@ -713,11 +709,11 @@ DAEDALUS_TEST(Backtracking, n_queens_solutions_are_actually_valid) {
         CHECK_EQ(placement.size(), 8u);
         for (std::size_t a = 0; a < placement.size(); ++a) {
             for (std::size_t b = a + 1; b < placement.size(); ++b) {
-                CHECK_NE(placement[a], placement[b]);                 // same row
+                CHECK_NE(placement[a], placement[b]);   // same row
                 const std::size_t rowGap = placement[a] > placement[b]
                                                ? placement[a] - placement[b]
                                                : placement[b] - placement[a];
-                CHECK_NE(rowGap, b - a);                              // same diagonal
+                CHECK_NE(rowGap, b - a);   // same diagonal
             }
         }
     }
@@ -726,11 +722,9 @@ DAEDALUS_TEST(Backtracking, n_queens_solutions_are_actually_valid) {
 
 DAEDALUS_TEST(Backtracking, sudoku_solver) {
     SudokuGrid grid{
-        {5, 3, 0, 0, 7, 0, 0, 0, 0}, {6, 0, 0, 1, 9, 5, 0, 0, 0},
-        {0, 9, 8, 0, 0, 0, 0, 6, 0}, {8, 0, 0, 0, 6, 0, 0, 0, 3},
-        {4, 0, 0, 8, 0, 3, 0, 0, 1}, {7, 0, 0, 0, 2, 0, 0, 0, 6},
-        {0, 6, 0, 0, 0, 0, 2, 8, 0}, {0, 0, 0, 4, 1, 9, 0, 0, 5},
-        {0, 0, 0, 0, 8, 0, 0, 7, 9}};
+        {5, 3, 0, 0, 7, 0, 0, 0, 0}, {6, 0, 0, 1, 9, 5, 0, 0, 0}, {0, 9, 8, 0, 0, 0, 0, 6, 0},
+        {8, 0, 0, 0, 6, 0, 0, 0, 3}, {4, 0, 0, 8, 0, 3, 0, 0, 1}, {7, 0, 0, 0, 2, 0, 0, 0, 6},
+        {0, 6, 0, 0, 0, 0, 2, 8, 0}, {0, 0, 0, 4, 1, 9, 0, 0, 5}, {0, 0, 0, 0, 8, 0, 0, 7, 9}};
 
     CHECK_TRUE(solveSudoku(grid));
     CHECK_TRUE(isValidSudoku(grid));
@@ -831,10 +825,9 @@ DAEDALUS_TEST(Backtracking, graph_colouring) {
 // ============================================================================
 
 DAEDALUS_TEST(Greedy, activity_selection) {
-    const std::vector<Activity> activities{
-        {1, 4, "a"}, {3, 5, "b"}, {0, 6, "c"}, {5, 7, "d"},
-        {3, 9, "e"}, {5, 9, "f"}, {6, 10, "g"}, {8, 11, "h"},
-        {8, 12, "i"}, {2, 14, "j"}, {12, 16, "k"}};
+    const std::vector<Activity> activities{{1, 4, "a"},  {3, 5, "b"},  {0, 6, "c"},  {5, 7, "d"},
+                                           {3, 9, "e"},  {5, 9, "f"},  {6, 10, "g"}, {8, 11, "h"},
+                                           {8, 12, "i"}, {2, 14, "j"}, {12, 16, "k"}};
 
     const auto chosen = activitySelection(activities);
     CHECK_EQ(chosen.size(), 4u);
@@ -875,8 +868,7 @@ DAEDALUS_TEST(Greedy, huffman_edge_cases) {
     const auto single = huffmanCoding("aaaa");
     CHECK_EQ(single.codes.size(), 1u);
     CHECK_EQ(single.codes.at('a'), std::string("0"));
-    CHECK_EQ(huffmanDecode(huffmanEncode("aaaa", single.codes), single.codes),
-             std::string("aaaa"));
+    CHECK_EQ(huffmanDecode(huffmanEncode("aaaa", single.codes), single.codes), std::string("aaaa"));
     CHECK_THROWS_AS(huffmanEncode("z", single.codes), InvalidArgument);
     CHECK_THROWS_AS(huffmanDecode("0000001", huffmanCoding("abc").codes), InvalidArgument);
 }
@@ -891,9 +883,9 @@ DAEDALUS_TEST(Greedy, job_sequencing) {
 }
 
 DAEDALUS_TEST(Greedy, minimum_platforms) {
-    CHECK_EQ(minimumPlatforms({900, 940, 950, 1100, 1500, 1800},
-                              {910, 1200, 1120, 1130, 1900, 2000}),
-             3u);
+    CHECK_EQ(
+        minimumPlatforms({900, 940, 950, 1100, 1500, 1800}, {910, 1200, 1120, 1130, 1900, 2000}),
+        3u);
     CHECK_EQ(minimumPlatforms({100}, {200}), 1u);
     CHECK_THROWS_AS(minimumPlatforms({1, 2}, {3}), InvalidArgument);
 }
@@ -922,7 +914,7 @@ DAEDALUS_TEST(NumberTheory, primality) {
     CHECK_FALSE(isPrime(1));
     CHECK_TRUE(isPrime(2));
     CHECK_TRUE(isPrime(97));
-    CHECK_FALSE(isPrime(561));                  // a Carmichael number
+    CHECK_FALSE(isPrime(561));   // a Carmichael number
     CHECK_TRUE(isPrime(1000000007ull));
     CHECK_TRUE(isPrime(18446744073709551557ull));   // largest 64-bit prime
     CHECK_FALSE(isPrime(1000000009ull * 3));
@@ -932,7 +924,7 @@ DAEDALUS_TEST(NumberTheory, sieves_agree_with_each_other_and_with_isPrime) {
     const auto sieved = sieveOfEratosthenes(10000);
     const auto linear = linearSieve(10000);
     CHECK_EQ(sieved, linear.primes);
-    CHECK_EQ(sieved.size(), 1229u);             // pi(10000)
+    CHECK_EQ(sieved.size(), 1229u);   // pi(10000)
     CHECK_EQ(sieved.front(), 2u);
     CHECK_EQ(sieved.back(), 9973u);
 
@@ -942,7 +934,7 @@ DAEDALUS_TEST(NumberTheory, sieves_agree_with_each_other_and_with_isPrime) {
 }
 
 DAEDALUS_TEST(NumberTheory, factorisation_and_divisors) {
-    CHECK_EQ(primeFactors(360).size(), 3u);     // 2^3 * 3^2 * 5
+    CHECK_EQ(primeFactors(360).size(), 3u);   // 2^3 * 3^2 * 5
     CHECK_EQ(primeFactors(360)[0].second, 3u);
     CHECK_EQ(primeFactors(97).size(), 1u);
     CHECK_EQ(divisors(28), (std::vector<std::uint64_t>{1, 2, 4, 7, 14, 28}));
@@ -971,8 +963,8 @@ DAEDALUS_TEST(NumberTheory, modular_arithmetic) {
     CHECK_EQ(modularMultiply(18446744073709551557ull - 1, 2, 18446744073709551557ull),
              18446744073709551555ull);
 
-    CHECK_EQ(modularInverse(3, 11).value(), 4);       // 3 * 4 = 12 = 1 mod 11
-    CHECK_FALSE(modularInverse(4, 8).has_value());    // not coprime
+    CHECK_EQ(modularInverse(3, 11).value(), 4);      // 3 * 4 = 12 = 1 mod 11
+    CHECK_FALSE(modularInverse(4, 8).has_value());   // not coprime
     CHECK_THROWS_AS(modularPower(2, 3, 0), InvalidArgument);
 }
 
@@ -1006,7 +998,7 @@ DAEDALUS_TEST(NumberTheory, combinatorics_and_fibonacci) {
 
 DAEDALUS_TEST(DivideAndConquer, inversion_counting) {
     CHECK_EQ(countInversions({1, 2, 3, 4}), 0);
-    CHECK_EQ(countInversions({4, 3, 2, 1}), 6);          // n(n-1)/2
+    CHECK_EQ(countInversions({4, 3, 2, 1}), 6);   // n(n-1)/2
     CHECK_EQ(countInversions({2, 4, 1, 3, 5}), 3);
     CHECK_EQ(countInversions({}), 0);
     CHECK_EQ(countInversions({1}), 0);
@@ -1068,8 +1060,7 @@ DAEDALUS_TEST(DivideAndConquer, karatsuba_matches_long_multiplication) {
     for (int trial = 0; trial < 40; ++trial) {
         const long long a = static_cast<long long>(rng() % 100000);
         const long long b = static_cast<long long>(rng() % 100000);
-        CHECK_EQ(karatsubaMultiply(std::to_string(a), std::to_string(b)),
-                 std::to_string(a * b));
+        CHECK_EQ(karatsubaMultiply(std::to_string(a), std::to_string(b)), std::to_string(a * b));
     }
 }
 
@@ -1104,6 +1095,5 @@ DAEDALUS_TEST(DivideAndConquer, majority_element) {
     CHECK_FALSE(majorityElement(std::vector<int>{1, 2, 3}).has_value());
     CHECK_FALSE(majorityElement(std::vector<int>{1, 2}).has_value());   // exactly half
     CHECK_FALSE(majorityElement(std::vector<int>{}).has_value());
-    CHECK_EQ(majorityElement(std::vector<std::string>{"a", "a", "b"}).value(),
-             std::string("a"));
+    CHECK_EQ(majorityElement(std::vector<std::string>{"a", "a", "b"}).value(), std::string("a"));
 }

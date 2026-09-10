@@ -213,8 +213,7 @@ struct CoinChangeResult {
     for (long long coin : coins) {
         if (coin <= 0) continue;
         for (long long value = coin; value <= amount; ++value) {
-            ways[static_cast<std::size_t>(value)] +=
-                ways[static_cast<std::size_t>(value - coin)];
+            ways[static_cast<std::size_t>(value)] += ways[static_cast<std::size_t>(value - coin)];
         }
     }
     return ways[static_cast<std::size_t>(amount)];
@@ -230,7 +229,7 @@ struct CoinChangeResult {
     const std::vector<long long>& values) {
     if (values.empty()) return {};
 
-    std::vector<std::size_t> tailIndex;         // index into values, per length
+    std::vector<std::size_t> tailIndex;   // index into values, per length
     std::vector<std::size_t> predecessor(values.size(), values.size());
 
     for (std::size_t i = 0; i < values.size(); ++i) {
@@ -267,8 +266,8 @@ struct CoinChangeResult {
     std::vector<std::size_t> current(b.size() + 1, 0);
     for (std::size_t i = 1; i <= a.size(); ++i) {
         for (std::size_t j = 1; j <= b.size(); ++j) {
-            current[j] = a[i - 1] == b[j - 1] ? previous[j - 1] + 1
-                                              : std::max(previous[j], current[j - 1]);
+            current[j] =
+                a[i - 1] == b[j - 1] ? previous[j - 1] + 1 : std::max(previous[j], current[j - 1]);
         }
         previous.swap(current);
     }
@@ -279,8 +278,7 @@ struct CoinChangeResult {
 
 /// Can any subset reach exactly `target`? O(n * target) with a bitset-style
 /// boolean row.
-[[nodiscard]] inline bool subsetSumExists(const std::vector<long long>& values,
-                                          long long target) {
+[[nodiscard]] inline bool subsetSumExists(const std::vector<long long>& values, long long target) {
     if (target < 0) return false;
     std::vector<bool> reachable(static_cast<std::size_t>(target) + 1, false);
     reachable[0] = true;
@@ -314,8 +312,7 @@ struct MatrixChainResult {
 /// n matrices, matrix i being dimensions[i] x dimensions[i+1]. Multiplication is
 /// associative but not equally cheap: the order can change the cost by orders
 /// of magnitude, and this finds the cheapest.
-[[nodiscard]] inline MatrixChainResult matrixChainOrder(
-    const std::vector<long long>& dimensions) {
+[[nodiscard]] inline MatrixChainResult matrixChainOrder(const std::vector<long long>& dimensions) {
     require(dimensions.size() >= 2, "matrix chain needs at least one matrix");
     const std::size_t n = dimensions.size() - 1;
 
@@ -426,6 +423,6 @@ struct MatrixChainResult {
     return row[columns - 1];
 }
 
-}  // namespace daedalus
+}   // namespace daedalus
 
-#endif  // DAEDALUS_ALGORITHMS_DYNAMIC_PROGRAMMING_HPP
+#endif   // DAEDALUS_ALGORITHMS_DYNAMIC_PROGRAMMING_HPP

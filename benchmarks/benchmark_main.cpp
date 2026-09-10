@@ -24,9 +24,9 @@
 #include <map>
 #include <memory>
 #include <numeric>
-#include <sstream>
 #include <random>
 #include <set>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -62,9 +62,9 @@ double median(const std::function<void()>& work, int repeats = 5) {
     for (int i = 0; i < repeats; ++i) {
         const auto started = std::chrono::steady_clock::now();
         work();
-        samples.push_back(std::chrono::duration<double, std::milli>(
-                              std::chrono::steady_clock::now() - started)
-                              .count());
+        samples.push_back(
+            std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - started)
+                .count());
     }
     std::sort(samples.begin(), samples.end());
     return samples[samples.size() / 2];
@@ -73,7 +73,8 @@ double median(const std::function<void()>& work, int repeats = 5) {
 volatile std::size_t g_sink = 0;
 
 void heading(const std::string& title) {
-    std::cout << "\n" << std::string(76, '=') << "\n  " << title << "\n"
+    std::cout << "\n"
+              << std::string(76, '=') << "\n  " << title << "\n"
               << std::string(76, '=') << "\n\n";
 }
 
@@ -103,7 +104,9 @@ std::vector<int> shuffled(std::size_t count, std::uint32_t seed) {
     return values;
 }
 
-std::size_t scaled(std::size_t base) { return base * g_scale; }
+std::size_t scaled(std::size_t base) {
+    return base * g_scale;
+}
 
 // ---------------------------------------------------------------------------
 
@@ -124,16 +127,15 @@ void benchmarkSorting() {
     });
     row("std::sort", baseline, baseline, "the target to beat");
 
-    for (const char* name : {"intro", "quick", "merge", "heap", "tim", "shell", "radix",
-                             "counting"}) {
+    for (const char* name :
+         {"intro", "quick", "merge", "heap", "tim", "shell", "radix", "counting"}) {
         auto strategy = makeSortStrategy<int>(name);
         const double elapsed = median([&] {
             std::vector<int> data = input;
             strategy->sort(data);
             g_sink += static_cast<std::size_t>(data[0]);
         });
-        row(std::string("daedalus ") + name, elapsed, baseline,
-            strategy->worstComplexity());
+        row(std::string("daedalus ") + name, elapsed, baseline, strategy->worstComplexity());
     }
 
     std::cout << "\n  Reading this honestly:\n"
@@ -147,7 +149,9 @@ void benchmarkSorting() {
                  "    all -- they read the keys' bits. That is only possible for bounded\n"
                  "    integer keys, which is exactly the restriction they carry.\n"
                  "  * The quadratic sorts are excluded at this size on purpose: at\n"
-                 "    n = " << count << " bubble sort would take minutes. The CLI shows\n"
+                 "    n = "
+              << count
+              << " bubble sort would take minutes. The CLI shows\n"
                  "    the comparison-count difference at a readable scale instead.\n";
 }
 
@@ -162,17 +166,21 @@ void benchmarkTrees() {
 
     double baseline = 0.0;
     {
-        const double insert = median([&] {
-            std::set<int> reference;
-            for (int key : keys) reference.insert(key);
-            g_sink += reference.size();
-        }, 3);
+        const double insert = median(
+            [&] {
+                std::set<int> reference;
+                for (int key : keys) reference.insert(key);
+                g_sink += reference.size();
+            },
+            3);
         std::set<int> reference(keys.begin(), keys.end());
-        const double lookup = median([&] {
-            std::size_t found = 0;
-            for (int key : keys) found += reference.count(key);
-            g_sink += found;
-        }, 3);
+        const double lookup = median(
+            [&] {
+                std::size_t found = 0;
+                for (int key : keys) found += reference.count(key);
+                g_sink += found;
+            },
+            3);
         baseline = insert;
         std::ostringstream lookupText;
         lookupText << std::fixed << std::setprecision(2) << lookup;
@@ -180,18 +188,22 @@ void benchmarkTrees() {
     }
 
     const auto measure = [&](const std::string& label, auto makeTree) {
-        const double insert = median([&] {
-            auto tree = makeTree();
-            for (int key : keys) tree->insert(key);
-            g_sink += tree->size();
-        }, 3);
+        const double insert = median(
+            [&] {
+                auto tree = makeTree();
+                for (int key : keys) tree->insert(key);
+                g_sink += tree->size();
+            },
+            3);
         auto tree = makeTree();
         for (int key : keys) tree->insert(key);
-        const double lookup = median([&] {
-            std::size_t found = 0;
-            for (int key : keys) found += tree->contains(key) ? 1u : 0u;
-            g_sink += found;
-        }, 3);
+        const double lookup = median(
+            [&] {
+                std::size_t found = 0;
+                for (int key : keys) found += tree->contains(key) ? 1u : 0u;
+                g_sink += found;
+            },
+            3);
         std::ostringstream lookupText;
         lookupText << std::fixed << std::setprecision(2) << lookup;
         row(label, insert, baseline, lookupText.str());
@@ -219,18 +231,22 @@ void benchmarkHashing() {
 
     double baseline = 0.0;
     {
-        const double insert = median([&] {
-            std::unordered_map<int, int> reference;
-            for (int key : keys) reference[key] = key;
-            g_sink += reference.size();
-        }, 3);
+        const double insert = median(
+            [&] {
+                std::unordered_map<int, int> reference;
+                for (int key : keys) reference[key] = key;
+                g_sink += reference.size();
+            },
+            3);
         std::unordered_map<int, int> reference;
         for (int key : keys) reference[key] = key;
-        const double lookup = median([&] {
-            std::size_t found = 0;
-            for (int key : keys) found += reference.count(key);
-            g_sink += found;
-        }, 3);
+        const double lookup = median(
+            [&] {
+                std::size_t found = 0;
+                for (int key : keys) found += reference.count(key);
+                g_sink += found;
+            },
+            3);
         baseline = insert;
         std::ostringstream lookupText;
         lookupText << std::fixed << std::setprecision(2) << lookup;
@@ -238,36 +254,44 @@ void benchmarkHashing() {
     }
 
     {
-        const double insert = median([&] {
-            HashMap<int, int> map;
-            for (int key : keys) map.put(key, key);
-            g_sink += map.size();
-        }, 3);
+        const double insert = median(
+            [&] {
+                HashMap<int, int> map;
+                for (int key : keys) map.put(key, key);
+                g_sink += map.size();
+            },
+            3);
         HashMap<int, int> map;
         for (int key : keys) map.put(key, key);
-        const double lookup = median([&] {
-            std::size_t found = 0;
-            for (int key : keys) found += map.contains(key) ? 1u : 0u;
-            g_sink += found;
-        }, 3);
+        const double lookup = median(
+            [&] {
+                std::size_t found = 0;
+                for (int key : keys) found += map.contains(key) ? 1u : 0u;
+                g_sink += found;
+            },
+            3);
         std::ostringstream lookupText;
         lookupText << std::fixed << std::setprecision(2) << lookup;
         row("daedalus HashMap (chained)", insert, baseline, lookupText.str());
     }
 
     {
-        const double insert = median([&] {
-            OpenAddressingMap<int, int> map;
-            for (int key : keys) map.put(key, key);
-            g_sink += map.size();
-        }, 3);
+        const double insert = median(
+            [&] {
+                OpenAddressingMap<int, int> map;
+                for (int key : keys) map.put(key, key);
+                g_sink += map.size();
+            },
+            3);
         OpenAddressingMap<int, int> map;
         for (int key : keys) map.put(key, key);
-        const double lookup = median([&] {
-            std::size_t found = 0;
-            for (int key : keys) found += map.contains(key) ? 1u : 0u;
-            g_sink += found;
-        }, 3);
+        const double lookup = median(
+            [&] {
+                std::size_t found = 0;
+                for (int key : keys) found += map.contains(key) ? 1u : 0u;
+                g_sink += found;
+            },
+            3);
         std::ostringstream lookupText;
         lookupText << std::fixed << std::setprecision(2) << lookup;
         row("daedalus OpenAddressing", insert, baseline, lookupText.str());
@@ -297,37 +321,45 @@ void benchmarkContainers() {
     columns("structure", "append ms", "vs vector", "scan ms");
     std::cout << "  " << std::string(72, '-') << "\n";
 
-    const double baseline = median([&] {
-        std::vector<int> data;
-        for (std::size_t i = 0; i < count; ++i) data.push_back(static_cast<int>(i));
-        g_sink += data.size();
-    }, 3);
+    const double baseline = median(
+        [&] {
+            std::vector<int> data;
+            for (std::size_t i = 0; i < count; ++i) data.push_back(static_cast<int>(i));
+            g_sink += data.size();
+        },
+        3);
     {
         std::vector<int> data;
         for (std::size_t i = 0; i < count; ++i) data.push_back(static_cast<int>(i));
-        const double scan = median([&] {
-            std::size_t total = 0;
-            for (int value : data) total += static_cast<std::size_t>(value);
-            g_sink += total;
-        }, 3);
+        const double scan = median(
+            [&] {
+                std::size_t total = 0;
+                for (int value : data) total += static_cast<std::size_t>(value);
+                g_sink += total;
+            },
+            3);
         std::ostringstream scanText;
         scanText << std::fixed << std::setprecision(2) << scan;
         row("std::vector", baseline, baseline, scanText.str());
     }
 
     {
-        const double append = median([&] {
-            DynamicArray<int> data;
-            for (std::size_t i = 0; i < count; ++i) data.pushBack(static_cast<int>(i));
-            g_sink += data.size();
-        }, 3);
+        const double append = median(
+            [&] {
+                DynamicArray<int> data;
+                for (std::size_t i = 0; i < count; ++i) data.pushBack(static_cast<int>(i));
+                g_sink += data.size();
+            },
+            3);
         DynamicArray<int> data;
         for (std::size_t i = 0; i < count; ++i) data.pushBack(static_cast<int>(i));
-        const double scan = median([&] {
-            std::size_t total = 0;
-            for (int value : data) total += static_cast<std::size_t>(value);
-            g_sink += total;
-        }, 3);
+        const double scan = median(
+            [&] {
+                std::size_t total = 0;
+                for (int value : data) total += static_cast<std::size_t>(value);
+                g_sink += total;
+            },
+            3);
         std::ostringstream scanText;
         scanText << std::fixed << std::setprecision(2) << scan;
         row("daedalus DynamicArray", append, baseline, scanText.str());
@@ -375,20 +407,24 @@ void benchmarkGraph() {
 
     DisjointSet sets(elements);
     row("union of a full chain",
-        median([&] {
-            DisjointSet local(elements);
-            for (std::size_t i = 1; i < elements; ++i) local.unite(i - 1, i);
-            g_sink += local.componentCount();
-        }, 3),
+        median(
+            [&] {
+                DisjointSet local(elements);
+                for (std::size_t i = 1; i < elements; ++i) local.unite(i - 1, i);
+                g_sink += local.componentCount();
+            },
+            3),
         0.0, "O(alpha(n)) amortised");
 
     for (std::size_t i = 1; i < elements; ++i) sets.unite(i - 1, i);
     row("find on every element",
-        median([&] {
-            std::size_t total = 0;
-            for (std::size_t i = 0; i < elements; ++i) total += sets.find(i);
-            g_sink += total;
-        }, 3),
+        median(
+            [&] {
+                std::size_t total = 0;
+                for (std::size_t i = 0; i < elements; ++i) total += sets.find(i);
+                g_sink += total;
+            },
+            3),
         0.0, "flattened after the first pass");
 }
 
@@ -404,7 +440,7 @@ void printUsage(const char* program) {
               << "  --scale N    multiply every input size by N (default 1)\n";
 }
 
-}  // namespace
+}   // namespace
 
 int main(int argc, char** argv) {
     std::string suite;
@@ -429,10 +465,11 @@ int main(int argc, char** argv) {
         suite = argument;
     }
 
-    const std::map<std::string, std::function<void()>> suites{
-        {"sorting", benchmarkSorting},   {"trees", benchmarkTrees},
-        {"hashing", benchmarkHashing},   {"containers", benchmarkContainers},
-        {"graph", benchmarkGraph}};
+    const std::map<std::string, std::function<void()>> suites{{"sorting", benchmarkSorting},
+                                                              {"trees", benchmarkTrees},
+                                                              {"hashing", benchmarkHashing},
+                                                              {"containers", benchmarkContainers},
+                                                              {"graph", benchmarkGraph}};
 
     std::cout << daedalus::banner() << "\n"
               << "  benchmark scale: " << g_scale << "x\n"

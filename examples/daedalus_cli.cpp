@@ -69,7 +69,8 @@ using namespace daedalus;
 namespace {
 
 void heading(const std::string& title) {
-    std::cout << "\n" << std::string(74, '=') << "\n  " << title << "\n"
+    std::cout << "\n"
+              << std::string(74, '=') << "\n  " << title << "\n"
               << std::string(74, '=') << "\n";
 }
 
@@ -135,9 +136,9 @@ void demoSorting() {
         }
 
         std::cout << "  " << std::left << std::setw(12) << name << std::setw(14)
-                  << metrics->comparisons() << std::setw(12) << metrics->swaps()
-                  << std::setw(10) << std::fixed << std::setprecision(2) << elapsed
-                  << std::setw(9) << (strategy->stable() ? "yes" : "no") << std::setw(10)
+                  << metrics->comparisons() << std::setw(12) << metrics->swaps() << std::setw(10)
+                  << std::fixed << std::setprecision(2) << elapsed << std::setw(9)
+                  << (strategy->stable() ? "yes" : "no") << std::setw(10)
                   << (strategy->inPlace() ? "yes" : "no") << strategy->worstComplexity() << "\n";
     }
 
@@ -179,8 +180,8 @@ void demoTrees() {
         const double elapsed = milliseconds([&] {
             for (int i = 1; i <= count; ++i) tree->insert(i);
         });
-        const std::string note = tree->height() > 100 ? "degenerate: this is a linked list"
-                                                       : "stays logarithmic";
+        const std::string note =
+            tree->height() > 100 ? "degenerate: this is a linked list" : "stays logarithmic";
         std::cout << "  " << std::left << std::setw(20) << tree->name() << std::setw(10)
                   << tree->height() << std::setw(12) << std::fixed << std::setprecision(2)
                   << elapsed << note << "\n";
@@ -266,8 +267,7 @@ void demoGraph() {
     section("shortest paths from A");
     const auto shortest = dijkstra(roads, std::string("A"));
     for (std::size_t v = 0; v < roads.vertexCount(); ++v) {
-        std::cout << "  " << std::left << std::setw(32)
-                  << ("distance to " + roads.label(v))
+        std::cout << "  " << std::left << std::setw(32) << ("distance to " + roads.label(v))
                   << (shortest.reachable(v) ? std::to_string(shortest.distance[v])
                                             : std::string("unreachable"))
                   << "\n";
@@ -416,8 +416,7 @@ void demoHashing() {
     printRow("memory used (bytes)", filter.memoryBytes());
     printRow("hash functions", filter.hashCount());
     printRow("target error rate", filter.targetFalsePositiveRate());
-    printRow("observed error rate",
-             static_cast<double>(falsePositives) / 20000.0);
+    printRow("observed error rate", static_cast<double>(falsePositives) / 20000.0);
     std::cout << "  Never a false negative -- that is the guarantee it trades memory for.\n";
 
     section("cache policies on a scan-heavy workload");
@@ -506,16 +505,15 @@ void demoAlgorithms() {
     printRow("huffman encoded bits", huffman.encodedBits);
     printRow("fixed-width would need", huffman.fixedWidthBits);
     printRow("compression ratio", huffman.compressionRatio());
-    printRow("platforms needed",
-             minimumPlatforms({900, 940, 950, 1100, 1500, 1800},
-                              {910, 1200, 1120, 1130, 1900, 2000}));
+    printRow("platforms needed", minimumPlatforms({900, 940, 950, 1100, 1500, 1800},
+                                                  {910, 1200, 1120, 1130, 1900, 2000}));
 
     section("backtracking");
     for (std::size_t n : {std::size_t{6}, std::size_t{8}, std::size_t{10}}) {
         const auto queens = solveNQueens(n, true);
-        std::cout << "  " << std::left << std::setw(32)
-                  << (std::to_string(n) + "-queens solutions") << queens.solutionCount
-                  << "   (nodes explored: " << queens.nodesExplored << ")\n";
+        std::cout << "  " << std::left << std::setw(32) << (std::to_string(n) + "-queens solutions")
+                  << queens.solutionCount << "   (nodes explored: " << queens.nodesExplored
+                  << ")\n";
     }
     const auto eight = solveNQueens(8);
     std::cout << "\n  One of the 92 solutions for n=8:\n\n";
@@ -647,13 +645,12 @@ void printUsage(const char* program) {
               << "  version     print the library version\n";
 }
 
-}  // namespace
+}   // namespace
 
 int main(int argc, char** argv) {
     const std::map<std::string, std::function<void()>> commands{
-        {"sort", demoSorting},       {"trees", demoTrees},
-        {"graph", demoGraph},        {"strings", demoStrings},
-        {"hashing", demoHashing},    {"algorithms", demoAlgorithms},
+        {"sort", demoSorting},     {"trees", demoTrees},     {"graph", demoGraph},
+        {"strings", demoStrings},  {"hashing", demoHashing}, {"algorithms", demoAlgorithms},
         {"patterns", demoPatterns}};
 
     if (argc < 2) {
@@ -680,7 +677,8 @@ int main(int argc, char** argv) {
             demoHashing();
             demoAlgorithms();
             demoPatterns();
-            std::cout << "\n" << std::string(74, '=') << "\n"
+            std::cout << "\n"
+                      << std::string(74, '=') << "\n"
                       << "  Every number above was computed just now. Run the test suite\n"
                       << "  (ctest --test-dir build) to see the same behaviour asserted.\n"
                       << std::string(74, '=') << "\n";
